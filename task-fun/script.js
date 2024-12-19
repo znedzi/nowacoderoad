@@ -2,6 +2,7 @@
 
 
 var func = console.log
+}
 
 // funkcja console.log nic nie zwraca
 var result = console.log('Hello')
@@ -24,7 +25,5 @@ function add(x, y){
 console.log(add)
 console.log(add(5,5))
 console.log(add(5,20))
-
-
 
 
