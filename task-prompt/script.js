@@ -46,6 +46,6 @@ function add(a, b) {
     if(b === undefined) {
         b = 0
     }
-
-    return Number(a) + Number(b)
+    
+    return a + b
 }
