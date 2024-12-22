@@ -1,30 +1,49 @@
 'use strict'
 
+; (function(numbersAmount){
 
-function add(a, b){
-    return a + b
-}
-
-
-var userInput1 = Number(prompt('Please type a number!', 0))
-var userInput2 = Number(prompt('Please type a number!', 0))
+var numbersAmount
 
 
-// console.log('suma liczb wynosi:', add(userInput1, userInput2));
-// console.log('suma liczb wynosi:', add(x, y));
 
-var sum = add(userInput1, userInput2)
-
-
-if(sum) {
-
-    alert('The result is:' + sum)
-
-} else { //sum is equal to NaN or 0
-
-    if(sum === 0) {
-        alert('The result is:' + sum)
-    } else {
-        alert('Sorry, you provided not a number')
+// to co urzytkownik przekaże do środka użyj jako dwie liczby dodawania 
+    function add(a, b){
+        return a + b
     }
-}
+    
+    // to co urzytkownik przekaże do środka użyj jako zmienną "sum"
+    function showResult(sum) {
+        
+        if(sum) {
+        
+            alert('The result is:  ' + sum)
+        
+        } else { //sum is equal to NaN or 0
+        
+            if(sum === 0) {
+                alert('The result is:' + sum)
+            } else {
+                alert('Sorry, you provided not a number')
+            }
+        }
+    }
+
+    function getNumberForUser (){
+        var userInput1 = (prompt('Please type a number!', 0))
+        var number = Number(userInput1)
+        return number
+    }
+    
+
+    var result = 0
+
+
+    for(var i = 0; i < numbersAmount; i++) {
+        var number = getNumberForUser()
+        result = add(result, number)
+    }
+  
+        
+    showResult(result)
+ 
+})(2)
