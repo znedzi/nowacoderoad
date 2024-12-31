@@ -14,7 +14,7 @@ function getOperatorFromUser(){
 function getConfirmationFromUser(){
     return confirm('Do you wat to proceed?')
 }
-function getConfirmationFromUserAndProced(){
+function getConfirmationFromUserAndProced(result){
     var confirmation = getConfirmationFromUser()
 
 //Jeśli użytkownik wykonuje kolejne ioperacje to wchodzimy w mainLoop, jeśli tylko jedną to wyświetlamy showResult
@@ -52,3 +52,5 @@ function mainLoop(result){
 var result = getNumberFormUser()
 
 getConfirmationFromUserAndProced(result)
+
+
