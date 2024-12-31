@@ -1,5 +1,7 @@
 'use strict'
 
+var startCalculator = (function() {
+    
 function showResult(result){
     alert('Result is: ' + result)
 }
@@ -67,8 +69,11 @@ function mainLoop(result){
     getConfirmationFromUserAndProced(newResult)
 }
 
-var result = getNumberFormUser()
+function start(){
+    var result = getNumberFormUser()
+    getConfirmationFromUserAndProced(result)    
+}
 
-getConfirmationFromUserAndProced(result)
-
-
+// return start spowoduje wywołanie funkcji
+return start
+})()
