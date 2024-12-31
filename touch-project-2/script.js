@@ -5,11 +5,29 @@ function showResult(result){
 }
 function getNumberFormUser(){
     var input = prompt('Type number!')
-    return Number(input)
+    var number = Number(input)
     
+    if(Number.isNaN(number)){
+        return getNumberFormUser()
+    } else {
+        return number
+    }
 }
 function getOperatorFromUser(){
-    return prompt('Type operator (+, -, *, /)' )
+    var input = prompt('Type operator (+, -, *, /)' )
+
+    switch(input){
+        case '+':
+            return input
+        case '-':
+            return input
+        case '*':
+            return input
+        case '/':
+            return input
+        default:
+            return getOperatorFromUser()
+    }
 }
 function getConfirmationFromUser(){
     return confirm('Do you wat to proceed?')
