@@ -52,6 +52,8 @@ function move(deltaX = 0, deltaY = 0){
 
     circle.style.top = currentTop + deltaY + 'px'
     circle.style.left = currentLeft + deltaX + 'px'
+
+    dispalyPosition()
 }
 
 function moveDown(deltaTop = 10) {
@@ -100,14 +102,19 @@ function moveRight(deltaLeft = 10) {
 
 function dispalyPosition() {
 
+    // czyścimy kontener
+    container.innerHTML = ''
+
     // funcja pobiera właściowości (w tym współrzędne) wybranego elementu 
     const position = circle.getBoundingClientRect()
 
     const pX = document.createElement('p')
     const pY = document.createElement('p')
 
-    pX.innerText = 'Position X: ' + position.x
-    pY.innerText = 'Position Y: ' + position.y
+    // dajemy nawiasy, aby najpierw wykonał się kod w nawiasie i dopiero, aby został przyleiony do stringa
+    //inaczej mielibyśmy konkatenację i konkatenację
+    pX.innerText = 'Position X: ' + (position.x + position.width / 2)
+    pY.innerText = 'Position Y: ' + (position.y + position.height / 2)
 
     // wkładamy utworzone funkcje do kontenera
     container.appendChild(pX)
