@@ -2,7 +2,7 @@ function createCircle(containerSelector){
 
     const container = document.querySelector(containerSelector)
 
-    //jeżeli nie ma containerSelector, to zakończprogram
+    //jeżeli nie ma containerSelector, to zakończ program
     if(!container) return
 
     const circle = document.createElement('div')
@@ -22,36 +22,56 @@ function createCircle(containerSelector){
     return circle
 }
 
+function move(deltaX = 0, deltaY = 0){
+    const currentLeft = Number(circle.style.left.replace('px', ''))
+    const currentTop = Number(circle.style.top.replace('px', ''))
+    circle.style.top = currentTop + deltaY + 'px'
+    circle.style.left = currentLeft + deltaX + 'px'
+
+}
+
 function moveDown(deltaTop = 10) {
     //aktualna warość naszego koła w wartości liczbowej
-    const currentTop = Number(circle.style.top.replace('px', ''))
+    // const currentTop = Number(circle.style.top.replace('px', ''))
 
     //przesuwamy koło o sumę aktualnej jego wartości oraz wartości dodanej 
-    circle.style.top = currentTop + deltaTop + 'px'
+    // circle.style.top = currentTop + deltaTop + 'px'
+
+    // zastępujemy powyższe linie kodem uniwersalnym (wywołaniem funkcji move())
+    move(0, deltaTop)
 }
 
 function moveLeft(deltaLeft = 10) {
     //aktualna warość naszego koła w wartości liczbowej
-    const currentLeft = Number(circle.style.left.replace('px', ''))
+    // const currentLeft = Number(circle.style.left.replace('px', ''))
 
     //przesuwamy koło o sumę aktualnej jego wartości oraz wartości dodanej 
-    circle.style.left = currentLeft + deltaLeft + 'px'
+    // circle.style.left = currentLeft + deltaLeft + 'px'
+
+    // zastępujemy powyższe linie kodem uniwersalnym (wywołaniem funkcji move())
+    move(-deltaLeft, 0)
 }
 
 function moveUp(deltaTop = 10) {
     //aktualna warość naszego koła w wartości liczbowej
-    const currentTop = Number(circle.style.top.replace('px', ''))
+    // const currentTop = Number(circle.style.top.replace('px', ''))
 
     //przesuwamy koło o sumę aktualnej jego wartości oraz wartości dodanej 
-    circle.style.top = currentTop - deltaTop + 'px'
+    // circle.style.top = currentTop - deltaTop + 'px'
+
+    // zastępujemy powyższe linie kodem uniwersalnym (wywołaniem funkcji move())
+    move(0, -deltaTop)
 }
 
 function moveRight(deltaLeft = 10) {
     //aktualna warość naszego koła w wartości liczbowej
-    const currentLeft = Number(circle.style.left.replace('px', ''))
+    // const currentLeft = Number(circle.style.left.replace('px', ''))
 
     //przesuwamy koło o sumę aktualnej jego wartości oraz wartości dodanej 
-    circle.style.left = currentLeft - deltaLeft + 'px'
+    // circle.style.left = currentLeft - deltaLeft + 'px'
+
+    // zastępujemy powyższe linie kodem uniwersalnym (wywołaniem funkcji move())
+    move(deltaLeft, 0)
 }
 
 const   circle = createCircle('body')
