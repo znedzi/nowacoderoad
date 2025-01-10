@@ -22,12 +22,17 @@ function createCircle(containerSelector){
     return circle
 }
 
+// ta funkcja zamienia wartość stringową ze znacznikiem px, na samą postać liczbową
+function extractPixelFromString(pixelsString){
+    return Number(pixelsString.replace('px', ''))
+}
+
 function move(deltaX = 0, deltaY = 0){
-    const currentLeft = Number(circle.style.left.replace('px', ''))
-    const currentTop = Number(circle.style.top.replace('px', ''))
+    const currentTop = extractPixelFromString(circle.style.top)
+    const currentLeft = extractPixelFromString(circle.style.left)
+
     circle.style.top = currentTop + deltaY + 'px'
     circle.style.left = currentLeft + deltaX + 'px'
-
 }
 
 function moveDown(deltaTop = 10) {
