@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <button>
+        CLICK ME
+    </button>
+    
+
+    <script>
+
+        //w poniższym przypadku wykona się tylko funkcja 2, ponieważ nadpisuje ona funkcję 1.
+        //rozwiązaniem tej sytuacji jest wywołanie funkcji addEventListener(), która przyjmuje dwa argumenty:
+        // nazwę eventu oraz zdarzenie do wywołania.
+        const button = document.querySelector('button')
+
+        function clickHandler1() {
+            alert('Hello 1')
+        }
+
+        function clickHandler2() {
+            alert('Hello 2')
+        }
+
+        // button.onclick = clickHandler1
+        // button.onclick = clickHandler2
+
+        button.addEventListener(
+            'click',
+            clickHandler1
+        )
+
+        button.addEventListener(
+            'click',
+            clickHandler2
+        )
+
+        button.addEventListener(
+            'click',
+            function () {
+                alert('Hello 3')
+            }
+        )
+
+    </script>
+</body>
+</html>
