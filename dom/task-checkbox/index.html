@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h2 class="input-checked"></h2>
+    <input type="checkbox" name="" id="" />
+    <h2 class="select-value"></h2>
+
+    <select name="" id="">
+        <option value="pl">Polski</option>
+        <option value="en">Agnielski</option>
+        <option value="de">Niemiecki</option>
+    </select>
+
+
+    <script>
+
+        const input = document.querySelector('input')
+        const inputChecked = document.querySelector('.input-checked')
+
+        const select = document.querySelector('select')
+        const selectValue = document.querySelector('.select-value')
+
+        inputChecked.innerText = input.checked
+        selectValue.innerText = select.value
+
+        input.addEventListener(
+            'change',
+            function (event) {
+                inputChecked.innerText = event.target.checked
+            }
+        )
+
+        select.addEventListener(
+            'change',
+            function (event) {
+                selectValue.innerText = event.target.value
+            }
+        )
+
+    </script>
+
+</body>
+</html>
