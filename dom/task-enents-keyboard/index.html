@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <!-- event keydown wyzwala się kiedy przycisk został naciśnięty -->
+    <!-- event keyup wyzwala się kiedy przycisk został zwolniony -->
+    <h2>Key was pressed:</h2>
+    <h3 class="keydown"></h3>
+    
+    <h2>Key was relased:</h2>
+    <h3 class="keyup"></h3>
+
+    <script>
+
+        const keydownHeader = document.querySelector(".keydown")
+        const keyupHeader = document.querySelector(".keyup")
+
+        window.addEventListener(
+            'keydown',
+            function (event) {
+                keydownHeader.innerText = event.key
+            }
+        )
+         
+        window.addEventListener(
+            'keyup',
+            function (event) {
+                keyupHeader.innerText = event.key
+            }
+
+
+        )
+    </script>
+    
+</body>
+</html>
