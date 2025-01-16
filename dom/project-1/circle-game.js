@@ -164,6 +164,14 @@ function keyEventHandler(event){
         default:
             break;
     }
+
+    // po uruchomieniu naciśnięcia klawisza następuje wywołanie funkcji przesunięcia
+    // natomiast poniższy kod powoduje odłączenie nasłuchiwania na zdarzenie
+    // co zapobiega kolejnym wywołaniom eventów przy naciśniętym klawiszu.
+    window.removeEventListener(
+        'keydown',
+        keyDownEventHandler
+    )
 }
        
 // Jeżeli coś inicjalizujemy (czyli rozpoczynamy pracę) to wywołujemy funkcję init.
@@ -176,8 +184,21 @@ function init(){
 
 dispalyPosition()
 
+// włączamy eventy (nasłuch)
 window.addEventListener(
     'keydown',
+    keyEventHandler
+)
+
+// włączamy eventy (nasłuch) na naciśnięcie dowolnego klawisza
+window.addEventListener(
+    'keydown',
+    keyEventHandler
+)
+
+// / włączamy eventy (nasłuch) na zwolnienie dowolnego klawisza
+window.addEventListener(
+    'keyup',
     keyEventHandler
 )
 }
