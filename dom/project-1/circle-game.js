@@ -184,12 +184,6 @@ function init(){
 
 dispalyPosition()
 
-// włączamy eventy (nasłuch)
-window.addEventListener(
-    'keydown',
-    keyEventHandler
-)
-
 // włączamy eventy (nasłuch) na naciśnięcie dowolnego klawisza
 window.addEventListener(
     'keydown',
