@@ -170,7 +170,7 @@ function keyEventHandler(event){
     // co zapobiega kolejnym wywołaniom eventów przy naciśniętym klawiszu.
     window.removeEventListener(
         'keydown',
-        keyDownEventHandler
+        keyEventHandler
     )
 }
        
