@@ -48,40 +48,90 @@
         const div1 = document.querySelector('.div-1')
         const div2 = document.querySelector('.div-2')
         const div3 = document.querySelector('.div-3')
-    
+
+        // EVENT BUBBLING
+
         window.addEventListener(
             'click',
             function () {
-                console.log('window')
+                console.log('bubling - window')
             }
         )
 
         document.addEventListener(
             'click',
             function () {
-                console.log('body')
+                console.log('bubling - body')
             }
         )
 
         div1.addEventListener(
             'click',
             function () {
-                console.log('div-1 (red)')
+                console.log('bubling -  div-1 (red)')
             }
         )
 
         div2.addEventListener(
             'click',
             function () {
-                console.log('div-2 (yellow)')
+                console.log('bubling - div-2 (yellow)')
             }
         )
 
         div3.addEventListener(
             'click',
             function () {
-                console.log('div-3 (blue)')
+                console.log('bubling - div-3 (blue)')
             }
+        )
+    
+        // EVENT CAPTION
+
+        window.addEventListener(
+            'click',
+            function () {
+                console.log('capturing window')
+            },
+            true
+        )
+
+        document.addEventListener(
+            'click',
+            function (event) {
+                
+                // powoduje zatrzymanie dalszego Bubblingu i Capturingu
+                // w zalezności od mniejsca gdzie zostanie umieszczony
+                // (przerywa dalsze eventy !!!!!)
+
+                // event.stopPropagation()
+                console.log('capturing body')
+            },
+            true
+        )
+
+        div1.addEventListener(
+            'click',
+            function () {
+                console.log('capturing div-1 (red)')
+            },
+            true
+        )
+
+        div2.addEventListener(
+            'click',
+            function () {
+                console.log('capturing div-2 (yellow)')
+            },
+            true
+        )
+
+        div3.addEventListener(
+            'click',
+            function () {
+                console.log('capturing div-3 (blue)')
+            },
+            true
         )
     </script>
 </body>
