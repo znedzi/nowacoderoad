@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<form action="/" 
+    class="contact-form"
+    >
+
+    <input type="text"
+    class="contact-form_input"
+     name="" id="">
+
+
+    <button 
+        class="contact-form_submit-button">
+        SUBMIT
+    </button>
+
+</form>
+
+<script>
+
+    const contactForm = document.querySelector('.contact-form')
+
+    const input = document.querySelector('.contact-form_input')
+    const button = document.querySelector('.contact-form_submit-button')
+
+    // event podpięty do formularza
+    contactForm.addEventListener(
+        'submit',
+        function (event) {
+             // zapobiegaj zachowaniu domyślnemu !!!
+            event.preventDefault()
+
+            // czytamy wartość danego inputa i możemy coś z nią zrobić
+            const value = input.value
+
+            // np. możemy wyświetlić tę wartość w console.log
+            console.log(value)
+        }
+    )
+
+    // evet podpięty do buttona
+    // button.addEventListener(
+    //     'click',
+    //     function(event){
+    //         // zapobiegaj zachowaniu domyślnemu !!!
+    //         event.preventDefault()
+    //         const value = input.value
+    //         console.log(value)
+            
+    //     }
+    // )
+</script>
+    
+</body>
+</html>
