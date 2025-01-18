@@ -1,3 +1,6 @@
+(function(){
+
+// wysokość naszego navbaru
 const offset = 50
 
 function onWindowScroll(event){
@@ -33,3 +36,4 @@ window.addEventListener(
     onWindowScroll
 )
 
+})()
