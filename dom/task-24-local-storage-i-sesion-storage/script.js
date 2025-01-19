@@ -24,3 +24,5 @@ console.log(JSON.parse(localStorage.getItem("tasks")))
 // pobieranie z localStorage nieistniejącej wartości zwróci null
 // null jest watością fałszywą wieć przy zamianie na Number(null), zwraca 0. 
 localStorage.getItem('unknow-key')
+
+// 
