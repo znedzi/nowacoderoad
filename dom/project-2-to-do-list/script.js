@@ -12,6 +12,40 @@ const addTask = function(newTaskText){
         
 }
 
+const renderTasks = function(){
+    const taskContainer = document.createElement('div')
+
+    // za pomocą pętli wyświetlamy i dodajemy do strony nasze zadania
+    for(i=0; i< tasks.length; i++){
+        const div = document.createElement('div')
+
+        // task[i].text - bo to jest obiekt !!!
+        div.innerText = tasks[i].text
+        // 
+        taskContainer.appendChild(div)
+    }
+
+    return taskContainer
+}
+
+const renderForm = function(){
+    // tworzymy  kontener który będzie otaczał nam nasze elementy 
+    // i dopiero je do niego dodajemy
+    const formCointainer = document.createElement('div')
+    
+
+    const input = document.createElement('input')
+    const button = document.createElement('button')
+
+    button.innerText = "ADD NEW TASK"
+
+    formCointainer.appendChild(button)
+    formCointainer.appendChild(input)
+
+    return formCointainer
+}
+
+
 const render = function(containerSelector = 'body') {
     const container = document.querySelector(containerSelector)
 
@@ -20,15 +54,15 @@ const render = function(containerSelector = 'body') {
     // czyścimy nasz kontener przed wyświetleniem zadań
     container.innerHTML = ''
 
-    // za pomocą pętli wyświetlamy i dodajemy do strony nasze zadania
-    for(i=0; i< tasks.length; i++){
-        const div = document.createElement('div')
+   const formCointainer = renderForm()
 
-        // task[i].text - bo to jest obiekt !!!
-        div.innerText = tasks[i].text
+    // wywołaliśmy funkcję, a obiekt który zwróciła dodaliśmy do drzewa DOM
+    const tasksContainer = renderTasks()
 
-        container.appendChild(div)
-    }
+
+    container.appendChild(formCointainer)
+    container.appendChild(tasksContainer)
+    
 }
 
 addTask('Wynieść śmieci')
