@@ -2,8 +2,8 @@ const tasks = []
 
 const addTask = function(newTaskText){
     const newTask = {
-        timestamp: Date.now(),
         text: newTaskText,
+        timestamp: Date.now(),
     }
 
     tasks[tasks.length] = newTask
