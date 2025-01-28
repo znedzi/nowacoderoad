@@ -23,6 +23,7 @@ const renderTasks = function(){
 
         // task[i].text - bo to jest obiekt !!!
         div.innerText = tasks[i].text
+        
         // 
         taskContainer.appendChild(div)
     }
@@ -32,7 +33,7 @@ const renderTasks = function(){
 
 const renderForm = function(){
     // tworzymy  kontener który będzie otaczał nam nasze elementy 
-    // i dopiero je do niego dodajemy
+    // i dopiero do niego dodajemy wszystkie elementy
     const formContainer = document.createElement('div')
     
 
@@ -42,6 +43,7 @@ const renderForm = function(){
 
     button.innerText = "ADD NEW TASK"
 
+    // podpinamy nasłuch tam gdzie mamy formularz
     form.addEventListener(
         'submit',
         function(event) {
@@ -51,9 +53,9 @@ const renderForm = function(){
         }
     )
 
-    formContainer.appendChild(form)
     form.appendChild(input)
     form.appendChild(button)
+    formContainer.appendChild(form)
     
     
 
@@ -62,6 +64,9 @@ const renderForm = function(){
 
 
 const render = function(containerSelector = 'body') {
+    // Jeżeli nie podamy funkcji innego parametru to domyślnie dopisze do 'body'
+    // tworzymy container i doklejamy do niego kolejne div-y wygenerowne
+    // za pomocą pętli for wywołanej przez funkcję renderForm()
     const container = document.querySelector(containerSelector)
 
     if(!container) return
@@ -74,8 +79,10 @@ const render = function(containerSelector = 'body') {
     // wywołaliśmy funkcję, a obiekt który zwróciła dodaliśmy do drzewa DOM
     const tasksContainer = renderTasks()
 
-
+    // Wygenerowany formularz łącznie input i buttonem dołączmy do container
     container.appendChild(formContainer)
+
+    // wygenerowane taski dołączamy do container
     container.appendChild(tasksContainer)
     
 }
@@ -85,5 +92,6 @@ const render = function(containerSelector = 'body') {
 // addTask('Nauczyć się JS')
 // addTask('Nauczyć się GIT')
 
-// pierwsze wywołanie render()
+// pierwsze wejście użytkownika na stronę wywołujemy funkcję render()
+// oraz po każdej zmianie w tasks w funkcji addTask()
 render()
