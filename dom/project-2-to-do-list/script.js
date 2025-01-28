@@ -20,21 +20,27 @@ const addTask = function(newTaskText){
     saveTasks()
 }
 
-const renderTasks = function(){
-    const taskContainer = document.createElement('div')
-
-    const ol = document.createElement('ol')
-
+const renderTask = function(task){
+    
     // za pomocą pętli wyświetlamy i dodajemy do strony nasze zadania
-    for(i=0; i< tasks.length; i++){
+   
         const li = document.createElement('li')
 
         // task[i].text - bo to jest obiekt !!!
         li.innerText = tasks[i].text
         
-        // 
+        return li
+}
+
+const renderTasks = function(){
+    const taskContainer = document.createElement('div')
+
+    const ol = document.createElement('ol')
+
+    for(i=0; i< tasks.length; i++){
+        const li = renderTask(tasks[i])
         ol.appendChild(li)
-    }
+}
 
     taskContainer.appendChild(ol)
 
