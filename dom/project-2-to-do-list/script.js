@@ -1,5 +1,11 @@
-// odczytaj taski z localStorage, a jeśli nie istnieją utwórz pustą tablicę (lub)
-const tasks = JSON.parse(localStorage.getItem('tasks')) || []
+const loadTasks = function (){
+    // odczytaj taski z localStorage, a jeśli nie istnieją utwórz pustą tablicę opcja (lub)
+    return JSON.parse(localStorage.getItem('tasks')) || []
+}
+
+const saveTasks = function(){
+    localStorage.setItem('tasks', JSON.stringify(tasks))
+}
 
 const addTask = function(newTaskText){
     const newTask = {
@@ -11,7 +17,7 @@ const addTask = function(newTaskText){
     // wywołanie render po każdej zmianie
     render()
 
-    localStorage.setItem('tasks', JSON.stringify(tasks))
+    saveTasks()
 }
 
 const renderTasks = function(){
@@ -87,10 +93,13 @@ const render = function(containerSelector = 'body') {
     
 }
 
+const tasks = loadTasks() 
+
 // addTask('Wynieść śmieci')
 // addTask('Umyć okna')
 // addTask('Nauczyć się JS')
 // addTask('Nauczyć się GIT')
+
 
 // pierwsze wejście użytkownika na stronę wywołujemy funkcję render()
 // oraz po każdej zmianie w tasks w funkcji addTask()
