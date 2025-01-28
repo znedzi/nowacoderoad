@@ -1,4 +1,5 @@
-const tasks = []
+// odczytaj taski z localStorage, a jeśli nie istnieją utwórz pustą tablicę (lub)
+const tasks = JSON.parse(localStorage.getItem('tasks')) || []
 
 const addTask = function(newTaskText){
     const newTask = {
@@ -9,7 +10,8 @@ const addTask = function(newTaskText){
     tasks[tasks.length] = newTask
     // wywołanie render po każdej zmianie
     render()
-        
+
+    localStorage.setItem('tasks', JSON.stringify(tasks))
 }
 
 const renderTasks = function(){
@@ -31,18 +33,31 @@ const renderTasks = function(){
 const renderForm = function(){
     // tworzymy  kontener który będzie otaczał nam nasze elementy 
     // i dopiero je do niego dodajemy
-    const formCointainer = document.createElement('div')
+    const formContainer = document.createElement('div')
     
 
+    const form = document.createElement('form')
     const input = document.createElement('input')
     const button = document.createElement('button')
 
     button.innerText = "ADD NEW TASK"
 
-    formCointainer.appendChild(button)
-    formCointainer.appendChild(input)
+    form.addEventListener(
+        'submit',
+        function(event) {
+            // blokuj domyślne odświeżanie formularza
+            event.preventDefault()
+            addTask(input.value)
+        }
+    )
 
-    return formCointainer
+    formContainer.appendChild(form)
+    form.appendChild(input)
+    form.appendChild(button)
+    
+    
+
+    return formContainer
 }
 
 
@@ -54,21 +69,21 @@ const render = function(containerSelector = 'body') {
     // czyścimy nasz kontener przed wyświetleniem zadań
     container.innerHTML = ''
 
-   const formCointainer = renderForm()
+   const formContainer = renderForm()
 
     // wywołaliśmy funkcję, a obiekt który zwróciła dodaliśmy do drzewa DOM
     const tasksContainer = renderTasks()
 
 
-    container.appendChild(formCointainer)
+    container.appendChild(formContainer)
     container.appendChild(tasksContainer)
     
 }
 
-addTask('Wynieść śmieci')
-addTask('Umyć okna')
-addTask('Nauczyć się JS')
-addTask('Nauczyć się GIT')
+// addTask('Wynieść śmieci')
+// addTask('Umyć okna')
+// addTask('Nauczyć się JS')
+// addTask('Nauczyć się GIT')
 
 // pierwsze wywołanie render()
 render()
