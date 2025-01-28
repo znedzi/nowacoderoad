@@ -23,16 +23,20 @@ const addTask = function(newTaskText){
 const renderTasks = function(){
     const taskContainer = document.createElement('div')
 
+    const ol = document.createElement('ol')
+
     // za pomocą pętli wyświetlamy i dodajemy do strony nasze zadania
     for(i=0; i< tasks.length; i++){
-        const div = document.createElement('div')
+        const li = document.createElement('li')
 
         // task[i].text - bo to jest obiekt !!!
-        div.innerText = tasks[i].text
+        li.innerText = tasks[i].text
         
         // 
-        taskContainer.appendChild(div)
+        ol.appendChild(li)
     }
+
+    taskContainer.appendChild(ol)
 
     return taskContainer
 }
