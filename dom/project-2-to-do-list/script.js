@@ -8,6 +8,9 @@ const saveTasks = function(){
 }
 
 const addTask = function(newTaskText){
+    // Jeżeli newTaskText jest pustym stringiem to nic nie rób !
+    if(!newTaskText) return
+
     const newTask = {
         text: newTaskText,
         timestamp: Date.now(),
