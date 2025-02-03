@@ -1,0 +1,69 @@
+const initCalculator = (function(){
+
+const sumNumbersFromString = function(numbersInString){
+    const numbers = numbersInString.split(',')
+
+    let sum =0
+
+    for (let i =0; i < numbers.length; i++){
+        
+        const number = Number(numbers[i])
+
+        sum = sum  + number
+    }
+    return sum
+}
+
+
+const renderResult = function(value){
+
+    const result = sumNumbersFromString(value)
+
+    // Jeżeli result jest NaN, to zwróć
+    if(Number.isNaN(result)) {
+        return 'Error in input!'
+    }
+
+    return 'Sum is: ' + result
+}
+
+const render = function (container) {
+    
+    if(!container) return
+
+    const container = document.querySelector(containerSelector)
+
+    const input = document.createElement('input')
+    const p = document.createElement('p')
+
+    // za pierwszym razem wyświetlamy w p wartość sum = 0
+    p.innerText = renderResult(input.value)
+
+    // nie możemy napisać w addEventListener samego renderResult()
+    // gdyż funkcja była by wywołana w momencie wywołania funkcji render(),
+    // a my chcemy wywołac ją w momencie wywołania input
+    input.addEventListener(
+        'input',
+        function(){
+            p.innerText = renderResult(input.value)
+        }
+    )
+
+    container.appendChild(input)
+    container.appendChild(p)
+
+}
+
+// funkcja init ma wywołać naszą aplikację
+
+const init = function (containerSelector){
+
+    const container = document.querySelector(containerSelector)
+
+    render(container)
+}
+
+return init
+
+})()
+
