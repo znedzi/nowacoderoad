@@ -1,4 +1,4 @@
-// const initCalculator = (function(){
+const initCalculator = (function(){
 
 const sumNumbersFromString = function(numbersInString){
 
@@ -18,7 +18,8 @@ const sumNumbersFromString = function(numbersInString){
     return sum
 }
 
-
+// tej funkcji nie interesuje, gdzie będzie wyświetlany wynik ona ma go tylko skonstrułować
+// i zwrócić
 const renderResult = function(value){
 
     const result = sumNumbersFromString(value)
@@ -41,7 +42,7 @@ const render = function (containerSelector) {
     const input = document.createElement('input')
     const p = document.createElement('p')
 
-    // za pierwszym razem wyświetlamy w p wartość sum = 0
+    // za pierwszym razem wyświetlamy w "p" wartość sum = 0
     p.innerText = renderResult(input.value)
 
     // nie możemy napisać w addEventListener samego renderResult()
@@ -49,7 +50,9 @@ const render = function (containerSelector) {
     // a my chcemy wywołac ją w momencie wywołania input
     input.addEventListener(
         'input',
+        // wywołanie funkcji w momencie zajścia zdarzenia
         function(){
+            // włóż do "p" wynik wygenerowany w renderResult w zależności od input.value
             p.innerText = renderResult(input.value)
         }
     )
@@ -58,20 +61,17 @@ const render = function (containerSelector) {
     container.appendChild(p)
 }
 
-render('.calculator')
 
+// funkcja init ma wywołać naszą aplikację (zawsze piszemy tę funkcję i służy ona 
+// do rozruchu naszej aplikacji. Przekazuje jedyną zmienną do globalnego scopu.)
 
+const init = function (containerSelector){
 
-// // funkcja init ma wywołać naszą aplikację
+    render(containerSelector)
+}
 
-// const init = function (containerSelector){
+// zwracamy init na zewnątrz funkcji
+return init
 
-//     const container = document.querySelector(containerSelector)
-
-//     render(container)
-// }
-
-// // return init
-
-// // })()
+})()
 
