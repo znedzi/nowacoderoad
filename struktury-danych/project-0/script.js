@@ -1,16 +1,20 @@
-const initCalculator = (function(){
+// const initCalculator = (function(){
 
 const sumNumbersFromString = function(numbersInString){
+
     const numbers = numbersInString.split(',')
 
-    let sum =0
+    // console.log(numbers)
+    
+    let sum = 0
 
     for (let i =0; i < numbers.length; i++){
         
         const number = Number(numbers[i])
 
-        sum = sum  + number
+        sum = sum + number
     }
+
     return sum
 }
 
@@ -19,7 +23,7 @@ const renderResult = function(value){
 
     const result = sumNumbersFromString(value)
 
-    // Jeżeli result jest NaN, to zwróć
+    // Jeżeli result jest NaN, to zwróć 'Error in input!'
     if(Number.isNaN(result)) {
         return 'Error in input!'
     }
@@ -27,9 +31,10 @@ const renderResult = function(value){
     return 'Sum is: ' + result
 }
 
-const render = function (container) {
+
+const render = function (containerSelector) {
     
-    if(!container) return
+    if(!containerSelector) return
 
     const container = document.querySelector(containerSelector)
 
@@ -51,19 +56,22 @@ const render = function (container) {
 
     container.appendChild(input)
     container.appendChild(p)
-
 }
 
-// funkcja init ma wywołać naszą aplikację
+render('.calculator')
 
-const init = function (containerSelector){
 
-    const container = document.querySelector(containerSelector)
 
-    render(container)
-}
+// // funkcja init ma wywołać naszą aplikację
 
-return init
+// const init = function (containerSelector){
 
-})()
+//     const container = document.querySelector(containerSelector)
+
+//     render(container)
+// }
+
+// // return init
+
+// // })()
 
