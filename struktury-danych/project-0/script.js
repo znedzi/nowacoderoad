@@ -32,13 +32,10 @@ const renderResult = function(value){
     return 'Sum is: ' + result
 }
 
-
-const render = function (containerSelector) {
+// funkcja render jest niezależna generuje diva z elementami input, p i nasłuchem addEventListener
+const render = function () {
     
-    if(!containerSelector) return
-
-    const container = document.querySelector(containerSelector)
-
+    const container = document.createElement('div')
     const input = document.createElement('input')
     const p = document.createElement('p')
 
@@ -59,15 +56,33 @@ const render = function (containerSelector) {
 
     container.appendChild(input)
     container.appendChild(p)
+
+    // zwracamy div-a z input i p (możemy zwrócić tylko jeden element, a w ten sposób zwracamy obydwa)
+    return container
 }
+
 
 
 // funkcja init ma wywołać naszą aplikację (zawsze piszemy tę funkcję i służy ona 
 // do rozruchu naszej aplikacji. Przekazuje jedyną zmienną do globalnego scopu.)
 
-const init = function (containerSelector){
+const init = function(containerSelector){
 
-    render(containerSelector)
+    // deklarujemy kontener w którym zostanie umieszczony nasz kalkutator
+    const container = document.querySelector(containerSelector)
+
+    // sprawdzamy czy kontener jest utworzony
+    if(!container){
+        console.error('Container not found in document')
+        return
+    } 
+
+    // tworzymy kontener z naszymi elementami p i input oraz addEventListenerem
+    // i przypisujemy go do zmiennej app
+    const app = render(container)
+
+    // przypisujemy app do container
+    container.appendChild(app)
 }
 
 // zwracamy init na zewnątrz funkcji
