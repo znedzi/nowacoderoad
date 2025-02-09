@@ -1,3 +1,4 @@
+let appContainer = null
 let names = ["Ala", "Ela"]
 
 const addName = function(newName){
@@ -9,6 +10,8 @@ const addName = function(newName){
     // jeśli przypiszemy tablicę do zmiennej to za każdym razem nie modyfikujemy
     // samej tablicy tylko jej referencje
     names = names.concat(newName)
+    // po każdej zmianie wywołujemy render()
+    render()
 }
 
 // funkcja wyszukująca imię
@@ -90,19 +93,28 @@ const renderSearchResult = function() {
 // render musi przyjmować kontener do którego będziemy wrzucać naszą aplikację
 // u tworzymy 'div' i do niego dołączamy kolejne elementy aplikacji, a następnie zwracamy 'div'
 const render = function () {
-    div = document.createElement('div')
+    
+    // za pierwszym razem appContainer jest null, więc musimy go stworzyć
+    // potem gdy już istnieje to, nie tworzymy go ponownie tylko z niego korzystamy
+    if(!appContainer){
+       appContainer = document.createElement('div')
+    } 
+
+    // czyszczenie poprzedniej wersji o czy już mówiliśmy
+    appContainer.innerHTML = ''
+
 
     const list = renderList()
     const newNameInput = renderNewNameInput()
     const searchInput = renderSearchInput()
     const searchResult = renderSearchResult()
 
-    div.appendChild(list)
-    div.appendChild(newNameInput)
-    div.appendChild(searchInput)
-    div.appendChild(searchResult)
+    appContainer.appendChild(list)
+    appContainer.appendChild(newNameInput)
+    appContainer.appendChild(searchInput)
+    appContainer.appendChild(searchResult)
 
-    return div   
+    return appContainer   
 }
 
 const init = function (containerSelector) {
