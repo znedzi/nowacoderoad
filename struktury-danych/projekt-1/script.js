@@ -84,8 +84,12 @@ const renderSearchInput = function() {
 const renderSearchResult = function() {
     p = document.createElement('p')
 
-    p.innerText = 'Result'
-
+    if(nameExist('Ola')){
+        p.innerText = 'Exists'
+    } else {
+         p.innerText = 'NOT Exists'
+    }
+    
     return p
 }
 
