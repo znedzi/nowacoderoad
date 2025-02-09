@@ -1,5 +1,13 @@
+
+//ZMENNE OKRESŁAJĄ STAN NASZEJ APLIKACJI !!!
+// Możemy nimi dowolnie sterować
+
+// musimy użyć zmiennej ponieważ zawartość będzie się zmieniać
 let appContainer = null
 let names = ["Ala", "Ela"]
+// musimy użyć zmiennej glogalnej, aby wartość przekazać do innej funkcji
+let searchPrase = ''
+let isSearchFocused = false
 
 const addName = function(newName){
     
@@ -10,6 +18,8 @@ const addName = function(newName){
     // jeśli przypiszemy tablicę do zmiennej to za każdym razem nie modyfikujemy
     // samej tablicy tylko jej referencje
     names = names.concat(newName)
+    // po dodaniu imienia czyścimy pole input search
+    searchPrase = ''
     // po każdej zmianie wywołujemy render()
     render()
 }
@@ -40,10 +50,9 @@ const renderList = function() {
     return ul
 }
 
-
 // tworzymy pole input do dodawania imion oraz przycisk
 const renderNewNameInput = function() {
-    const div = document.createElement('div')
+    const form = document.createElement('form')
     
     const input = document.createElement('input')
     const button = document.createElement('button')
@@ -60,10 +69,10 @@ const renderNewNameInput = function() {
         }
     )
 
-    div.appendChild(input)
-    div.appendChild(button)
+    form.appendChild(input)
+    form.appendChild(button)
 
-    return div
+    return form
 }
 
 // tworzymy pole wyszukiwania imion
@@ -73,6 +82,38 @@ const renderSearchInput = function() {
     const input = document.createElement('input')
    
     input.setAttribute('placeholder', 'Search name')
+
+    // przypisujemy wartość zmiennej searchPrase do pola input.value 
+    input.value = searchPrase
+
+    // wywołujemy funkcję input.focus(), która ustawia kursor w tym polu
+    // set timeout (jak wszystkie) funkcje asynchroniczne, powoduje 
+    // wykonanie funkcji wewnątrz niego dopiero po całym kodzie który miał być 
+    // wywoływany, nawet jeśli ma czas 0 ms.
+    // (wywołaj setTimeout, ale dopiero po wykonaniu całego kodu, który ma być 
+    // zrobiony)
+    // Jeżeli isSearchFocused (pole jest aktywne) to go rejestrujemy
+    if(isSearchFocused){
+        setTimeout(
+            function() {
+                input.focus()
+            },
+            0
+        )
+    }
+    
+ 
+    input.addEventListener(
+        'input',
+        function(){
+            // ustawiamy zmienną globalną w zależności od input.value (na bieżąco)
+            searchPrase = input.value
+            // w momencie wprowadzania zmian w polu search ustawiamy zmienną
+            isSearchFocused = true
+            // po zmianie wywołujemy render()
+            render()
+        }
+    )
     
     div.appendChild(input)
     
@@ -84,10 +125,10 @@ const renderSearchInput = function() {
 const renderSearchResult = function() {
     p = document.createElement('p')
 
-    if(nameExist('Ola')){
+    if(nameExist(searchPrase)){
         p.innerText = 'Exists'
     } else {
-         p.innerText = 'NOT Exists'
+        p.innerText = 'NOT Exists'
     }
     
     return p
@@ -117,6 +158,9 @@ const render = function () {
     appContainer.appendChild(newNameInput)
     appContainer.appendChild(searchInput)
     appContainer.appendChild(searchResult)
+
+    // po każdym render() usuwamy isSearchFocused()
+    isSearchFocused = false
 
     return appContainer   
 }
