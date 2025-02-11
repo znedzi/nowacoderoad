@@ -1,5 +1,6 @@
+const initListApp = (function(){
 
-//ZMENNE OKRESŁAJĄ STAN NASZEJ APLIKACJI !!!
+//ZMIENNE OKREŚLAJĄ STAN NASZEJ APLIKACJI !!!
 // Możemy nimi dowolnie sterować
 
 // musimy użyć zmiennej ponieważ zawartość będzie się zmieniać
@@ -126,9 +127,9 @@ const renderSearchResult = function() {
     p = document.createElement('p')
 
     if(nameExist(searchPrase)){
-        p.innerText = 'Exists'
+        p.innerText = 'Search phrase exists in list'
     } else {
-        p.innerText = 'NOT Exists'
+        p.innerText = 'Search phrase NOT Exists in list'
     }
     
     return p
@@ -175,5 +176,6 @@ const init = function (containerSelector) {
     container.appendChild(app)
 }
 
-init('body')
+return init
 
+})()
