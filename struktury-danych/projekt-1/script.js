@@ -11,6 +11,7 @@ let searchPrase = ''
 let isSearchFocused = false
 
 const addName = function(newName){
+    if(!newName) return
     
     // musimy tablicę przypisać do zmiennej, gdyż za każdym
     // wywołaniem funkcji jest tworzona nowa tablica
@@ -53,6 +54,7 @@ const renderList = function() {
 
 // tworzymy pole input do dodawania imion oraz przycisk
 const renderNewNameInput = function() {
+    // formularz powoduje, że działa również enter
     const form = document.createElement('form')
     
     const input = document.createElement('input')
@@ -61,11 +63,13 @@ const renderNewNameInput = function() {
     input.setAttribute('placeholder', 'Add new name')
     button.innerText = 'ADD'
 
-    button.addEventListener(
-        'click',
-        function() {
-            // Jeżeli wartość jest pusta to nic nie rób
-            if (!input.value) return
+    // ustawiamy nasłuch na formularz
+    form.addEventListener(
+        'submit',
+        function(event) {
+            // blokuj domyślne zachowanie przeglądarki
+            event.preventDefault()
+           
             addName(input.value)
         }
     )
