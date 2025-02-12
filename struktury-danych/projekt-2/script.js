@@ -7,6 +7,7 @@ const removeElement = function(array, indexToRemove) {
     return newArray
 }
 
+
 const initListApp = (function(){
 
 //ZMIENNE OKREŚLAJĄ STAN NASZEJ APLIKACJI !!!
@@ -52,15 +53,16 @@ const renderList = function() {
         
         const li = document.createElement('li')
         const button = document.createElement('button')
+        // obiekt drzewa dom zawierający text z innerText
+        const text = document.createTextNode(' ' + names[i])
+
         button.innerText = 'x'
 
-        li.innerText = names[i]
-       
         li.appendChild(button)
+        li.appendChild(text)
 
         // dołączamy każdy utworzony element "li" do elementu "ul"
         ul.appendChild(li)
-        
 
     }
     // zwracamy element "ul" wraz z dołączonymi do niego elementami "li"
