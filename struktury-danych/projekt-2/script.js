@@ -1,13 +1,3 @@
-const removeElement = function(array, indexToRemove) {
-    const head = array.slice(0, indexToRemove)
-    const tail = array.slice(indexToRemove + 1)
-
-    const newArray = head.concat(tail)
-
-    return newArray
-}
-
-
 const initListApp = (function(){
 
 //ZMIENNE OKREŚLAJĄ STAN NASZEJ APLIKACJI !!!
@@ -19,6 +9,15 @@ let names = ["Ala", "Ela"]
 // musimy użyć zmiennej glogalnej, aby wartość przekazać do innej funkcji
 let searchPrase = ''
 let isSearchFocused = false
+
+const removeElement = function(array, indexToRemove) {
+    const head = array.slice(0, indexToRemove)
+    const tail = array.slice(indexToRemove + 1)
+
+    const newArray = head.concat(tail)
+
+    return newArray
+}
 
 const addName = function(newName){
     if(!newName) return
@@ -36,12 +35,43 @@ const addName = function(newName){
     render()
 }
 
+const removeName = function(indexToRemove){
+
+    names = removeElement(names, indexToRemove)
+
+    render()
+}
+
 // funkcja wyszukująca imię
 const nameExist = function(name){
     return names.includes(name)
 }
 
-// funkcja, która tworzy liste elementów
+// funkcja renderująca poszczególne elementy listy
+const renderListItem = function(name, index) {
+
+    const li = document.createElement('li')
+    const button = document.createElement('button')
+    // obiekt drzewa dom zawierający text z innerText
+    const text = document.createTextNode(' ' + name)
+
+    button.innerText = 'x'
+
+    button.addEventListener(
+        'click',
+        function () {
+            removeName(index)
+        }
+    )
+
+    li.appendChild(button)
+    li.appendChild(text)
+
+    return li
+}
+
+
+// funkcja, która tworzy całą liste elementów
 const renderList = function() {
 
     // tworzymy element ul
@@ -51,16 +81,9 @@ const renderList = function() {
     // i do każdego przypisujemy tekst z tablicy
     for(let i = 0; i< names.length; i++) {
         
-        const li = document.createElement('li')
-        const button = document.createElement('button')
-        // obiekt drzewa dom zawierający text z innerText
-        const text = document.createTextNode(' ' + names[i])
-
-        button.innerText = 'x'
-
-        li.appendChild(button)
-        li.appendChild(text)
-
+        // przekazujemy kolejne elementy tablicy jako parametr funkcji renderListItem
+        const li = renderListItem(names[i], i)
+       
         // dołączamy każdy utworzony element "li" do elementu "ul"
         ul.appendChild(li)
 
