@@ -33,13 +33,13 @@ const add2 = function(x){
 }
 
 // callWithNumber2 z parametrem add2 zwróci 10
-// gdyż jako parametr jest wstawiana funkcja 
+// gdyż jako parametr fn jest wstawiana funkcja add2
 console.log(
     callWithNumber2(add2)
 )
 
 
-// callWithNumber2 po przekazaniu funkcji consol log 
-// podstawi jako parametr 2, która zostanie wyświetlona
+// callWithNumber2 po przekazaniu funkcji consol.log 
+// podstawi ją jako parametr fn 2, która zostanie wyświetlona
 // gdyz jako parametr jest wstawiana funkcja console.log
 callWithNumber2(console.log) 
