@@ -43,3 +43,4 @@ console.log(allNamesReverted === allNamesRevertedSecondTime)  //false
 
 const allNamesPlusOneMore = allNames.concat('Malwina')
 console.log(allNamesPlusOneMore)
+
