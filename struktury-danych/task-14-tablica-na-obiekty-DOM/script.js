@@ -1,8 +1,4 @@
-names = ['Ala', 'Ola', 'Ela', 'Agnieszka']
-
-const namesUpperCase = names.map(function(element, index, array){
-    return element.toUpperCase()
-})
+names = ['Ala', 'Ola', 'Ela', 'Agnieszka', 'Jola']
 
 const appendArray = function(array, container){
 
@@ -25,11 +21,19 @@ const renderListItem = function(name){
     return li
 }
 
-// zamiana wszystkich elementów tablicy na listę li
-// const namesElements = names.map(function(name, index, array){
-//     return renderListItem(name)
-// })
+const namesUpperCase = names.map(function(element, index, array){
+    return element.toUpperCase()
+})
 
-const namesElements = namesUpperCase.map(renderListItem)
+const toUpperCase = function(string) {
+    return string.toUpperCase()
+}
+
+
+const namesElements =  (
+    names
+        .map(toUpperCase)
+        .map(renderListItem)
+)
 
 appendArray(namesElements, document.body)
