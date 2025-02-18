@@ -4,9 +4,6 @@ const positiveNumbers = numbers.filter(function(number, index, array){
     return number > 0
 })
 
-
-
-
 const negativeNumbers = numbers.filter(function(number, index, array){
     return number < 0
 })
