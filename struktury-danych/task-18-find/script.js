@@ -22,11 +22,6 @@ const findByValue = function (value) {
 const findAla = findByValue('Ala')
 
 
-const findOla = function(element, index, array){
-    return element === 'Ola'
-}
-
-
 const foundElement = names.find(findByValue('Ola'))
 
 console.log(foundElement)
