@@ -30,7 +30,7 @@ const appendArray = function (array, container) {
 }
 
 const renderTask = function(task){
-    const container = document.createElement('div')
+    const container = document.createElement('li')
     container.className = 'todo-list_list-item'
 
     if(task.isCompleted){
@@ -47,7 +47,7 @@ const renderTask = function(task){
 // jeśli nie podamy tasks w parametrze funkcji, taski zostaną pobrane z globalnego scopa
 
 const renderTasksLists = function(tasks){
-    const container = document.createElement('div')
+    const container = document.createElement('ol')
     container.className = 'todo-list_list'
 
     // zamieniamy każdy task na element drzewa DOM
