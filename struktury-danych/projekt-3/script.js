@@ -62,6 +62,36 @@ const renderTasksLists = function(tasks){
     return container
 }
 
+const renderNewTaskInput = function(){
+    const input = document.createElement('input')
+    input.className = 'todo-list__input'
+
+    return input
+}
+
+const renderNewTaskButton = function(label){
+    const button = document.createElement('button')
+    button.className = 'todo-list__button'
+    button.innerText = label
+
+    return button
+}
+
+// tworzymy kontener dla formularza, nie musimy tego robić dla inputa i buttona
+// które to dołączymy do formularza (patrz wyżej)
+const renderNewTaskForm = function(){
+    const container = document.createElement('form')
+    container.className = 'todo-list__from'
+
+    const inputElement = renderNewTaskInput()
+    container.appendChild(inputElement)
+
+    const buttonElement = renderNewTaskButton('ADD')
+    container.appendChild(buttonElement)
+
+    return container
+}
+
 
 // funkcja render renderuje całą aplikację i powinna ją zwrócić
 // tylko funkcja render powinna zaglądać do głownego scopa w poszukiwaniu tasków
@@ -72,8 +102,10 @@ const render = function(){
     const container = document.createElement('div')
     container.className = 'todo-list'
 
+    const renderNewTaskFormElement = renderNewTaskForm()
     const taskListElement = renderTasksLists(tasks)
 
+    container.appendChild(renderNewTaskFormElement)
     container.appendChild(taskListElement)
 
     return container

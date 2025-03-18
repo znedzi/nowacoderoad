@@ -1,8 +1,8 @@
-.todo-list_from {
+.todo-list__from {
     display: flex;
 }
 
-.todo-list_input {
+.todo-list__input {
     border-radius: 4px;
     outline: none;
     border: 1px solid rgba(0, 0, 0, 0.25);
@@ -11,7 +11,7 @@
     width: 100%;
 }
 
-.todo-list_button {
+.todo-list__button {
     border-radius: 4px;
     height: 20px;
     outline: none;
