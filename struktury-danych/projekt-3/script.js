@@ -29,6 +29,20 @@ const onNewToDoNameChange = function(event){
     update()
 }
 
+// co się stanie po kliknięciu w button
+const onNewToDoSubmit = function(event){
+    event.preventDefault()
+
+    newToDoName
+
+    tasks = tasks.concat({
+        name: newToDoName,
+        isCompleted: false,
+    })
+    newToDoName = ''
+    update()
+}
+
 const focus = function(condition, element){
      // trick wywołujemy focusa za 0 milisekund co powoduje wykonanie 
      // dopiero na końcu całego kodu co powoduje, że nie tracimy focusa
@@ -110,6 +124,8 @@ const renderNewTaskForm = function(){
     const container = document.createElement('form')
     container.className = 'todo-list__from'
 
+    container.addEventListener('submit', onNewToDoSubmit)
+
     const inputElement = renderNewTaskInput(
         onNewToDoNameChange,
         newToDoInputIsFocused,
@@ -136,10 +152,11 @@ const render = function(){
     const renderNewTaskFormElement = renderNewTaskForm()
     const taskListElement = renderTasksLists(tasks)
 
-    const text = document.createTextNode(newToDoName)
-
+    // Przykładowe wyświetlenie textu
+    // const text = document.createTextNode(newToDoName)
+    // container.appendChild(text)
     
-    container.appendChild(text)
+    
     container.appendChild(renderNewTaskFormElement)
     container.appendChild(taskListElement)
 
