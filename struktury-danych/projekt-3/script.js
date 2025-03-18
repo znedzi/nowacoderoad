@@ -9,8 +9,8 @@ let sort = 'ASCENDING' // ASCENDING or DESCENDING
 
 let searchPrase = ''
 let searchInputFocused = false
-let newToDoName = ''
-let newToDoInputFocused = false
+let newToDoName = 'asd'
+let newToDoInputIsFocused = false
 
 let tasks = [
     {
@@ -22,6 +22,25 @@ let tasks = [
         isCompleted: true,
     }
 ]
+
+const onNewToDoNameChange = function(event){
+    newToDoInputIsFocused = true
+    newToDoName = event.target.value
+    update()
+}
+
+const focus = function(condition, element){
+     // trick wywołujemy focusa za 0 milisekund co powoduje wykonanie 
+     // dopiero na końcu całego kodu co powoduje, że nie tracimy focusa
+     //  z pola input
+    if(condition){
+        setTimeout(
+            function(){
+             element.focus()
+            },0
+        )
+    }
+}
 
 const appendArray = function (array, container) {
     array.forEach(function(element){
@@ -62,12 +81,20 @@ const renderTasksLists = function(tasks){
     return container
 }
 
-const renderNewTaskInput = function(){
+const renderNewTaskInput = function(onChange, focusCondition, className){
     const input = document.createElement('input')
-    input.className = 'todo-list__input'
+    input.className = className
+
+    input.value = newToDoName
+
+    input.addEventListener('input', onChange)
+
+    focus(focusCondition, input)
 
     return input
 }
+
+
 
 const renderNewTaskButton = function(label){
     const button = document.createElement('button')
@@ -83,7 +110,11 @@ const renderNewTaskForm = function(){
     const container = document.createElement('form')
     container.className = 'todo-list__from'
 
-    const inputElement = renderNewTaskInput()
+    const inputElement = renderNewTaskInput(
+        onNewToDoNameChange,
+        newToDoInputIsFocused,
+        'todo-list__input'
+    )
     container.appendChild(inputElement)
 
     const buttonElement = renderNewTaskButton('ADD')
@@ -105,6 +136,10 @@ const render = function(){
     const renderNewTaskFormElement = renderNewTaskForm()
     const taskListElement = renderTasksLists(tasks)
 
+    const text = document.createTextNode(newToDoName)
+
+    
+    container.appendChild(text)
     container.appendChild(renderNewTaskFormElement)
     container.appendChild(taskListElement)
 
@@ -114,6 +149,14 @@ const render = function(){
     // element drzewa DOM, który reprezentuje sam tekst
     // return document.createTextNode('Ala ma kota')
 }
+
+const update = function(){
+    mainContainer.innerHTML = ''
+    
+    const app = render()
+    mainContainer.appendChild(app)
+}
+
 
 const init = function(selector){
     const container = document.querySelector(selector)
