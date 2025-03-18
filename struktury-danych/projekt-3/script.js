@@ -16,6 +16,10 @@ let tasks = [
     {
         name: 'Wynieść śmieci',
         isCompleted: false,
+    },
+    {
+        name: 'Zmyć naczynia',
+        isCompleted: true,
     }
 ]
 
@@ -28,6 +32,11 @@ const appendArray = function (array, container) {
 const renderTask = function(task){
     const container = document.createElement('div')
     container.className = 'todo-list_list-item'
+
+    if(task.isCompleted){
+        container.className = container.className + ' todo-list__list-item--completed'
+    }
+
     container.innerText = task.name
 
     return container
@@ -37,7 +46,7 @@ const renderTask = function(task){
 // już w jakiś sposób przefiltrowane (np. tylko taski wykonane, lub w jakiś sposób posortowane)
 // jeśli nie podamy tasks w parametrze funkcji, taski zostaną pobrane z globalnego scopa
 
-const renderTasksLists = function(){
+const renderTasksLists = function(tasks){
     const container = document.createElement('div')
     container.className = 'todo-list_list'
 
@@ -55,12 +64,15 @@ const renderTasksLists = function(){
 
 
 // funkcja render renderuje całą aplikację i powinna ją zwrócić
+// tylko funkcja render powinna zaglądać do głownego scopa w poszukiwaniu tasków
+// natomiast wszystkie podfunkcje powinny mieć taski przekazywane przez funkcję render()
+// w postaci parametrów
 const render = function(){
     // kazda funkcja może mieć wewnątrz siebie własny kontener ze względu na scop(zakres)
     const container = document.createElement('div')
     container.className = 'todo-list'
 
-    const taskListElement = renderTasksLists()
+    const taskListElement = renderTasksLists(tasks)
 
     container.appendChild(taskListElement)
 
