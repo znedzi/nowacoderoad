@@ -25,9 +25,50 @@ const appendArray = function (array, container) {
     })
 }
 
+const renderTask = function(task){
+    const container = document.createElement('div')
+    container.className = 'todo-list_list-item'
+    container.innerText = task.name
 
+    return container
+}
+
+// dobrze jest taski do funkcji przekazywać jako parametr, bo wtedy mogą to być taski
+// już w jakiś sposób przefiltrowane (np. tylko taski wykonane, lub w jakiś sposób posortowane)
+// jeśli nie podamy tasks w parametrze funkcji, taski zostaną pobrane z globalnego scopa
+
+const renderTasksLists = function(){
+    const container = document.createElement('div')
+    container.className = 'todo-list_list'
+
+    // zamieniamy każdy task na element drzewa DOM
+    const tasksElement = tasks.map((task) => {
+          
+        return renderTask(task)
+    })
+
+    appendArray(tasksElement, container)
+    
+
+    return container
+}
+
+
+// funkcja render renderuje całą aplikację i powinna ją zwrócić
 const render = function(){
-    return document.createTextNode('Ala ma kota')
+    // kazda funkcja może mieć wewnątrz siebie własny kontener ze względu na scop(zakres)
+    const container = document.createElement('div')
+    container.className = 'todo-list'
+
+    const taskListElement = renderTasksLists()
+
+    container.appendChild(taskListElement)
+
+    return container
+
+    // Przykład
+    // element drzewa DOM, który reprezentuje sam tekst
+    // return document.createTextNode('Ala ma kota')
 }
 
 const init = function(selector){
