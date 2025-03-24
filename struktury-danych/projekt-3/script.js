@@ -2,6 +2,8 @@
 // co ten stan aplikacji zmienia
 // kiedy ten stan aplikacji się zmienia
 
+// App state
+
 let mainContainer = null
 
 let filter = 'ALL' //one of ALL, DONE, NOT-DONE
@@ -23,6 +25,9 @@ let tasks = [
     }
 ]
 
+
+// State changing functions
+
 const onNewToDoNameChange = function(event){
     newToDoInputIsFocused = true
     newToDoName = event.target.value
@@ -39,9 +44,13 @@ const onNewToDoSubmit = function(event){
         name: newToDoName,
         isCompleted: false,
     })
+    // czyścimy nasz formularz
     newToDoName = ''
+    // odświeżamy nasz formularz
     update()
 }
+
+// Generic / helper functions
 
 const focus = function(condition, element){
      // trick wywołujemy focusa za 0 milisekund co powoduje wykonanie 
@@ -62,9 +71,33 @@ const appendArray = function (array, container) {
     })
 }
 
-const renderTask = function(task){
+const onTaskCompleteToggle = function(indexToToggle){
+    
+        // Jeżeli indeks różni się od tego na którym jesteśmy to zwróć taska bez zmian
+        tasks = tasks.map(function(task, index){
+        if(index !== indexToToggle) return task
+
+        // Jeżeli indeks pokrywa się to zwróć taska ze zmienionym isCompleted
+        return {
+            name: task.name,
+            isCompleted: !task.isCompleted,
+        }
+    })
+
+    update()
+}
+
+
+// rendering
+
+const renderTask = function(task, onClick){
     const container = document.createElement('li')
-    container.className = 'todo-list_list-item'
+    container.className = 'todo-list__list-item'
+
+    container.addEventListener(
+        'click',
+        onClick
+    )
 
     if(task.isCompleted){
         container.className = container.className + ' todo-list__list-item--completed'
@@ -81,12 +114,12 @@ const renderTask = function(task){
 
 const renderTasksLists = function(tasks){
     const container = document.createElement('ol')
-    container.className = 'todo-list_list'
+    container.className = 'todo-list__list'
 
     // zamieniamy każdy task na element drzewa DOM
-    const tasksElement = tasks.map((task) => {
+    const tasksElement = tasks.map(function (task, index){
           
-        return renderTask(task)
+        return renderTask(task, function(){onTaskCompleteToggle(index)})
     })
 
     appendArray(tasksElement, container)

@@ -28,6 +28,7 @@
 }
 
 .todo-list__list-item {
+    cursor: pointer;
     font-family: sans-serif;
     font-size: 14px;
 }
