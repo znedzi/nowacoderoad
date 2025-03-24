@@ -11,7 +11,7 @@ let sort = 'ASCENDING' // ASCENDING or DESCENDING
 
 let searchPrase = ''
 let searchInputFocused = false
-let newToDoName = 'asd'
+let newToDoName = ''
 let newToDoInputIsFocused = false
 
 let tasks = [
@@ -87,23 +87,45 @@ const onTaskCompleteToggle = function(indexToToggle){
     update()
 }
 
+// Deleting task
+const onTaskDelete = function(indexToDelete){
+    tasks = tasks.filter(function(task, index){
+        // zostaw tylko te taski których index nie równa się (true) 
+        return index !== indexToDelete
+    })
+    update()
+}
+
 
 // rendering
 
-const renderTask = function(task, onClick){
+const renderTask = function(task, onTaskToggle, onDelete){
     const container = document.createElement('li')
+    const wrapper = document.createElement('div')
+    const textContainer = document.createElement('span')
     container.className = 'todo-list__list-item'
-
-    container.addEventListener(
-        'click',
-        onClick
-    )
-
+    wrapper.className = 'todo-list__list-item-wrapper'
+   
     if(task.isCompleted){
         container.className = container.className + ' todo-list__list-item--completed'
     }
+    
+    const deleteButton = renderButton(
+        'X',
+        onDelete,
+        'todo-list__button--delete'
+    )
 
-    container.innerText = task.name
+    container.addEventListener('click',onTaskToggle)
+
+
+    const text = document.createTextNode(task.name)
+
+    textContainer.appendChild(text)
+    wrapper.appendChild(textContainer)
+    wrapper.appendChild(deleteButton)
+
+    container.appendChild(wrapper)
 
     return container
 }
@@ -119,7 +141,11 @@ const renderTasksLists = function(tasks){
     // zamieniamy każdy task na element drzewa DOM
     const tasksElement = tasks.map(function (task, index){
           
-        return renderTask(task, function(){onTaskCompleteToggle(index)})
+        return renderTask(
+            task,
+            function(){onTaskCompleteToggle(index)},
+            function(){onTaskDelete(index)},
+        )
     })
 
     appendArray(tasksElement, container)
@@ -127,6 +153,20 @@ const renderTasksLists = function(tasks){
 
     return container
 }
+
+const renderButton = function(label, onClick, className){
+    const button = document.createElement('button')
+    button.className = className
+
+    if(onClick) {
+        button.addEventListener('click', onClick)
+    }
+
+    button.innerText = label
+
+    return button
+}
+
 
 const renderNewTaskInput = function(onChange, focusCondition, className){
     const input = document.createElement('input')
@@ -144,11 +184,7 @@ const renderNewTaskInput = function(onChange, focusCondition, className){
 
 
 const renderNewTaskButton = function(label){
-    const button = document.createElement('button')
-    button.className = 'todo-list__button'
-    button.innerText = label
-
-    return button
+    return renderButton(label, null, 'todo-list__button')
 }
 
 // tworzymy kontener dla formularza, nie musimy tego robić dla inputa i buttona

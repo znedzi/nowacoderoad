@@ -18,9 +18,20 @@
     box-sizing: border-box;
     background-color: rga(0, 0, 0, 0.1);
     border: 1 px, solid rgba(0, 0, 0, 0.25);
-    width: 100px;
+    
     cursor: pointer;
     transition: 0.5s ease-in-out;
+}
+
+.todo-list__button--delete{
+    width: 20px;
+    color: azure;
+    background-color: brown;
+}
+
+
+.todo-list__button--delete:hover{
+    background-color: #e74c3c;
 }
 
 .todo-list_button:hover {
@@ -32,6 +43,13 @@
     font-family: sans-serif;
     font-size: 14px;
 }
-.todo-list__list-item--completed {
+
+.todo-list__list-item-wrapper{
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.todo-list__list-item--completed .todo-list__list-item-text-container{
     text-decoration: line-through;
 }
