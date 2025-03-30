@@ -25,8 +25,19 @@ let tasks = [
     }
 ]
 
-
 // State changing functions
+
+const filterByCompleted = function (task) {
+    if(filter === 'ALL') return true
+
+    // Taski tylko is completed
+    if(filter === 'DONE') return task.isCompleted
+    // Taski tylko is not-completed
+    if(filter === 'NOT-DONE') return !task.isCompleted
+
+    // domuślnie zwracaj wszystkie taski jeżeli wartość filter nie zostanie określona poprawnie
+    return true
+}
 
 const onNewToDoNameChange = function(event){
     newToDoInputIsFocused = true
@@ -37,6 +48,9 @@ const onNewToDoNameChange = function(event){
 // co się stanie po kliknięciu w button
 const onNewToDoSubmit = function(event){
     event.preventDefault()
+
+    // Zapobiegamy dodawaniu pustych tasków - sam dodałem !!!
+    if(!newToDoName) return
 
     newToDoName
 
@@ -136,7 +150,9 @@ const renderTask = function(task, onTaskToggle, onDelete){
 
 const renderTasksLists = function(tasks){
     const container = document.createElement('ol')
-    container.className = 'todo-list__list'
+    container.className = 'todo-list__list '
+
+
 
     // zamieniamy każdy task na element drzewa DOM
     const tasksElement = tasks.map(function (task, index){
@@ -218,8 +234,12 @@ const render = function(){
     const container = document.createElement('div')
     container.className = 'todo-list'
 
+// przefilrowane taski
+    const filteredTasks = tasks
+        .filter(filterByCompleted)
+
     const renderNewTaskFormElement = renderNewTaskForm()
-    const taskListElement = renderTasksLists(tasks)
+    const taskListElement = renderTasksLists(filteredTasks)
 
     // Przykładowe wyświetlenie textu
     // const text = document.createTextNode(newToDoName)
