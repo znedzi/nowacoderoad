@@ -39,6 +39,8 @@ const filterByCompleted = function (task) {
     return true
 }
 
+// State changing functions
+
 const onNewToDoNameChange = function(event){
     newToDoInputIsFocused = true
     newToDoName = event.target.value
@@ -104,7 +106,7 @@ const onTaskCompleteToggle = function(indexToToggle){
 // Deleting task
 const onTaskDelete = function(indexToDelete){
     tasks = tasks.filter(function(task, index){
-        // zostaw tylko te taski których index nie równa się (true) 
+        // zostaw tylko te taski których index nie równa się (true) - indexToDelete
         return index !== indexToDelete
     })
     update()
@@ -119,6 +121,12 @@ const renderTask = function(task, onTaskToggle, onDelete){
     const textContainer = document.createElement('span')
     container.className = 'todo-list__list-item'
     wrapper.className = 'todo-list__list-item-wrapper'
+    textContainer.className = 'todo-list__list-item-text-container'
+
+    container.addEventListener(
+        'click',
+        onTaskCompleteToggle
+    )
    
     if(task.isCompleted){
         container.className = container.className + ' todo-list__list-item--completed'
@@ -130,15 +138,18 @@ const renderTask = function(task, onTaskToggle, onDelete){
         'todo-list__button--delete'
     )
 
-    container.addEventListener('click',onTaskToggle)
+    //przełączenie taska
+    container.addEventListener('click', onTaskToggle)
 
 
     const text = document.createTextNode(task.name)
 
+    // do textContainer dodajemy text
     textContainer.appendChild(text)
+    // do wrapper dodajemy textContainer
     wrapper.appendChild(textContainer)
     wrapper.appendChild(deleteButton)
-
+    // do container dodajemy wrapper
     container.appendChild(wrapper)
 
     return container
