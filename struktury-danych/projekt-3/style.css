@@ -50,10 +50,6 @@
 }
 
 
-.todo-list__list-item--completed {
+.todo-list__list-item--completed .todo-list__list-item-text-container {
     text-decoration: line-through;
 }
-
-/* .todo-list__list-item-text-container {
-    text-decoration: line-through;
-} */

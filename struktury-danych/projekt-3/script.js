@@ -68,6 +68,7 @@ const onNewToDoSubmit = function(event){
 
 // Generic / helper functions
 
+// parametry funkcji warunek który musi być spełniony i element 
 const focus = function(condition, element){
      // trick wywołujemy focusa za 0 milisekund co powoduje wykonanie 
      // dopiero na końcu całego kodu co powoduje, że nie tracimy focusa
@@ -121,6 +122,7 @@ const renderTask = function(task, onTaskToggle, onDelete){
     const textContainer = document.createElement('span')
     container.className = 'todo-list__list-item'
     wrapper.className = 'todo-list__list-item-wrapper'
+    // ta klasa opowiada za brak przekreślenia elementu span (naszego X)
     textContainer.className = 'todo-list__list-item-text-container'
 
     container.addEventListener(
