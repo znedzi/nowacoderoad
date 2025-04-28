@@ -20,6 +20,15 @@ let tasks = [
         isCompleted: false,
     },
     {
+        name: 'Ala ma kota',
+        isCompleted: true,
+    },
+    {
+        name: 'Wynieść śmieci',
+        isCompleted: false,
+    },
+
+    {
         name: 'Zmyć naczynia',
         isCompleted: true,
     }
@@ -39,7 +48,10 @@ const filterByCompleted = function (task) {
     return true
 }
 
-// State changing functions
+const onFilterChange = function(filterValue){
+    filter = filterValue
+    update()
+}
 
 const onNewToDoNameChange = function(event){
     newToDoInputIsFocused = true
@@ -237,6 +249,19 @@ const renderNewTaskForm = function(){
     return container
 }
 
+const renderFilters = function(){
+    const container = document.createElement('div')
+    
+    const buttonAll = renderButton('ALL', function(){onFilterChange('ALL')},'todo-list_button')
+    const buttonDone = renderButton('DONE', function(){onFilterChange('DONE')},'todo-list_button')
+    const buttonNotDone = renderButton('NOT-DONE', function(){onFilterChange('NOT-DONE')},'todo-list_button')
+
+    container.appendChild(buttonAll)
+    container.appendChild(buttonDone)
+    container.appendChild(buttonNotDone)
+
+    return container
+}
 
 // funkcja render renderuje całą aplikację i powinna ją zwrócić
 // tylko funkcja render powinna zaglądać do głownego scopa w poszukiwaniu tasków
@@ -247,9 +272,12 @@ const render = function(){
     const container = document.createElement('div')
     container.className = 'todo-list'
 
+    const filtersElement = renderFilters()
+
 // przefilrowane taski
     const filteredTasks = tasks
         .filter(filterByCompleted)
+        
 
     const renderNewTaskFormElement = renderNewTaskForm()
     const taskListElement = renderTasksLists(filteredTasks)
@@ -257,8 +285,9 @@ const render = function(){
     // Przykładowe wyświetlenie textu
     // const text = document.createTextNode(newToDoName)
     // container.appendChild(text)
-    
-    
+
+
+    container.appendChild(filtersElement)
     container.appendChild(renderNewTaskFormElement)
     container.appendChild(taskListElement)
 
