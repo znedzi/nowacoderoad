@@ -1,46 +1,38 @@
 class ZarzadzanieUrlopem {
     constructor() {
-        // Mapa do przechowywania konfiguracji urlopów dla poszczególnych lat.
-        // Klucz: rok (liczba), Wartość: { initialPodstawowy, initialDodatkowy, remainingPodstawowy, remainingDodatkowy }
         this.konfiguracjeUrlopow = new Map();
-        // Tablica do przechowywania historii zgłoszonych dni wolnych.
         this.historiaUrlopow = [];
         
-        // Ładowanie danych z pamięci lokalnej przeglądarki przy starcie.
         this.loadData();
     }
 
-    // Zapisuje aktualny stan danych do localStorage.
     saveData() {
         const dataToSave = {
-            konfiguracjeUrlopow: Array.from(this.konfiguracjeUrlopow.entries()), // Konwertuje Map na Array dla zapisu JSON
+            konfiguracjeUrlopow: Array.from(this.konfiguracjeUrlopow.entries()),
             historiaUrlopow: this.historiaUrlopow
         };
         localStorage.setItem('zarzadzanieUrlopemData', JSON.stringify(dataToSave));
     }
 
-    // Ładuje dane z localStorage przy starcie aplikacji.
     loadData() {
         const savedData = localStorage.getItem('zarzadzanieUrlopemData');
         if (savedData) {
             const parsedData = JSON.parse(savedData);
-            this.konfiguracjeUrlopow = new Map(parsedData.konfiguracjeUrlopow); // Konwertuje Array z powrotem na Map
+            this.konfiguracjeUrlopow = new Map(parsedData.konfiguracjeUrlopow);
             this.historiaUrlopow = parsedData.historiaUrlopow;
         }
     }
 
-    // Ustawia lub aktualizuje początkową i pozostałą liczbę dni urlopu dla danego roku.
     ustawKonfiguracje(podstawowy, dodatkowy, rok) {
         this.konfiguracjeUrlopow.set(rok, {
-            initialPodstawowy: podstawowy,    // Początkowa liczba dni urlopu podstawowego
-            initialDodatkowy: dodatkowy,      // Początkowa liczba dni urlopu dodatkowego
-            remainingPodstawowy: podstawowy,  // Pozostała liczba dni urlopu podstawowego
-            remainingDodatkowy: dodatkowy     // Pozostała liczba dni urlopu dodatkowego
+            initialPodstawowy: podstawowy,
+            initialDodatkowy: dodatkowy,
+            remainingPodstawowy: podstawowy,
+            remainingDodatkowy: dodatkowy
         });
-        this.saveData(); // Zapisuje zmiany.
+        this.saveData();
     }
 
-    // Zwraca sumę pozostałych dni urlopu podstawowego ze wszystkich skonfigurowanych lat.
     getTotalRemainingPodstawowy() {
         let total = 0;
         for (const config of this.konfiguracjeUrlopow.values()) {
@@ -49,7 +41,6 @@ class ZarzadzanieUrlopem {
         return total;
     }
 
-    // Zwraca sumę pozostałych dni urlopu dodatkowego ze wszystkich skonfigurowanych lat.
     getTotalRemainingDodatkowy() {
         let total = 0;
         for (const config of this.konfiguracjeUrlopow.values()) {
@@ -58,7 +49,6 @@ class ZarzadzanieUrlopem {
         return total;
     }
 
-    // Zwraca sumę początkowych dni urlopu podstawowego ze wszystkich skonfigurowanych lat.
     getTotalInitialPodstawowy() {
         let total = 0;
         for (const config of this.konfiguracjeUrlopow.values()) {
@@ -67,7 +57,6 @@ class ZarzadzanieUrlopem {
         return total;
     }
 
-    // Zwraca sumę początkowych dni urlopu dodatkowego ze wszystkich skonfigurowanych lat.
     getTotalInitialDodatkowy() {
         let total = 0;
         for (const config of this.konfiguracjeUrlopow.values()) {
@@ -76,58 +65,43 @@ class ZarzadzanieUrlopem {
         return total;
     }
 
-    // Sprawdza dostępność urlopu, uwzględniając priorytet wykorzystania dni z lat ubiegłych
-    // dla konkretnego typu urlopu.
     sprawdzDostepnosc(typUrlopu, liczbaDni, isModifying = false, oldUrlopId = null) {
-        // Urlop L4 i opieka nie są zarządzane pulą dni, więc zawsze są dozwolone i nie wymagają sprawdzania.
         if (typUrlopu !== 'podstawowy' && typUrlopu !== 'dodatkowy') {
             return { canTake: true, message: '' };
         }
 
         const currentYear = new Date().getFullYear();
-        // Sortujemy lata rosnąco, aby zawsze brać pod uwagę najstarsze dostępne konfiguracje.
         const posortowaneLata = Array.from(this.konfiguracjeUrlopow.keys()).sort((a, b) => a - b);
 
-        // Tworzymy TYMCZASOWĄ kopię konfiguracji, NIE GŁĘBOKĄ KOPIĘ, aby sprawdzanie nie modyfikowało rzeczywistych danych.
-        // To jest kopia płytka Map, która odwołuje się do tych samych obiektów konfiguracyjnych,
-        // ale to jest OK, ponieważ w tym kroku nie modyfikujemy ich.
         const tempKonfiguracjeUrlopow = new Map(this.konfiguracjeUrlopow);
 
-        // Jeśli sprawdzamy dostępność w trakcie modyfikacji istniejącego urlopu,
-        // musimy najpierw "zwrócić" dni starego urlopu do tymczasowej puli.
         if (isModifying && oldUrlopId) {
             const oldUrlop = this.historiaUrlopow.find(u => u.id === oldUrlopId);
-            // Zwracamy dni TYLKO jeśli stary urlop był tego samego typu co nowy zgłaszany typ.
             if (oldUrlop && (oldUrlop.typ === 'podstawowy' || oldUrlop.typ === 'dodatkowy')) { 
                 const config = tempKonfiguracjeUrlopow.get(oldUrlop.rokUrlopu);
                 if (config) {
                     const remainingProp = oldUrlop.typ === 'podstawowy' ? 'remainingPodstawowy' : 'remainingDodatkowy';
                     const initialProp = oldUrlop.typ === 'podstawowy' ? 'initialPodstawowy' : 'initialDodatkowy';
-                    // Przywracamy dni, dbając o to, by nie przekroczyć początkowej liczby dla danego roku.
                     config[remainingProp] = Math.min(config[initialProp], config[remainingProp] + oldUrlop.dni);
                 }
             }
         }
 
-        let totalRemainingForType = 0;      // Całkowita dostępna pula dla DANEGO TYPU urlopu (np. tylko podstawowego).
-        let remainingFromPreviousYears = 0; // Pula z lat STARSZYCH niż bieżący rok, dla DANEGO TYPU urlopu (zaległy).
+        let totalRemainingForType = 0;
+        let remainingFromPreviousYears = 0;
 
-        // Iterujemy przez posortowane lata, aby obliczyć sumy dla DANEGO TYPU urlopu.
         for (const rok of posortowaneLata) {
             const config = tempKonfiguracjeUrlopow.get(rok);
-            // Określamy właściwość do sprawdzenia (remainingPodstawowy lub remainingDodatkowy).
             const remainingProp = typUrlopu === 'podstawowy' ? 'remainingPodstawowy' : 'remainingDodatkowy';
             
             if (config && config[remainingProp] > 0) {
                 totalRemainingForType += config[remainingProp];
-                // Jeśli rok jest starszy niż bieżący, dodajemy do puli zaległego urlopu.
                 if (rok < currentYear) { 
                     remainingFromPreviousYears += config[remainingProp];
                 }
             }
         }
 
-        // 1. Sprawdź, czy w ogóle jest wystarczająca całkowita liczba dni dla DANEGO TYPU urlopu.
         if (totalRemainingForType < liczbaDni) {
             return { 
                 canTake: false, 
@@ -135,11 +109,6 @@ class ZarzadzanieUrlopem {
             };
         }
 
-        // 2. Kluczowa logika priorytetu urlopu zaległego dla DANEGO TYPU:
-        // Jeśli są dostępne dni z lat poprzednich (zaległe) dla TEGO TYPU URLOPU,
-        // ORAZ zgłaszana liczba dni jest większa niż te dostępne zaległe dni.
-        // Oznacza to, że aby zrealizować żądanie, trzeba by sięgnąć po urlop z bieżącego lub przyszłego roku.
-        // W takim przypadku blokujemy zgłoszenie, ponieważ zaległości muszą być wykorzystane w pierwszej kolejności.
         if (remainingFromPreviousYears > 0 && liczbaDni > remainingFromPreviousYears) {
              return { 
                  canTake: false, 
@@ -147,22 +116,17 @@ class ZarzadzanieUrlopem {
              };
         }
         
-        // Jeśli wszystkie powyższe warunki zostały spełnione, urlop może zostać zgłoszony.
         return { canTake: true, message: '' };
     }
 
-    // Metoda do odejmowania dni urlopu z puli.
-    // Zawsze zaczyna od najstarszych lat, co zapewnia priorytet wykorzystania zaległości.
-    deductVacationDays(typUrlopu, liczbaDni, dataRozpoczecia) { // Przywrócono dataRozpoczecia
-        // Pomijamy L4 i opiekę, ponieważ nie odejmujemy dni z puli urlopowej dla tych typów.
+    deductVacationDays(typUrlopu, liczbaDni, dataRozpoczecia) {
         if (typUrlopu !== 'podstawowy' && typUrlopu !== 'dodatkowy') {
-            return null; // Zwracamy null, ponieważ nie odejmujemy dni z puli urlopowej.
+            return null;
         }
 
         let dniDoOdjecia = liczbaDni;
-        let rokDeduukcji = null; // Zapisuje rok, z którego ostatecznie pobrano urlop (najstarszy, jeśli z wielu lat)
+        let rokDeduukcji = null;
 
-        // Sortujemy lata od najstarszego do najnowszego, aby priorytezować wykorzystanie zaległości.
         const posortowaneLata = Array.from(this.konfiguracjeUrlopow.keys()).sort((a, b) => a - b);
 
         for (const rok of posortowaneLata) {
@@ -170,27 +134,23 @@ class ZarzadzanieUrlopem {
             let remainingProp = typUrlopu === 'podstawowy' ? 'remainingPodstawowy' : 'remainingDodatkowy';
 
             if (config && config[remainingProp] > 0 && dniDoOdjecia > 0) {
-                // Obliczamy ile dni można odjąć z bieżącego roku konfiguracji.
                 const odjeteZDanegoRoku = Math.min(dniDoOdjecia, config[remainingProp]);
-                config[remainingProp] -= odjeteZDanegoRoku; // Odejmowanie dni.
-                dniDoOdjecia -= odjeteZDanegoRoku;         // Zmniejszenie liczby dni do odjęcia.
+                config[remainingProp] -= odjeteZDanegoRoku;
+                dniDoOdjecia -= odjeteZDanegoRoku;         
                 
-                // Aktualizujemy rok deduukcji. Jeśli dni pobrano z tego roku, staje się on rokiem deduukcji.
-                // Ustawiamy rok deduukcji tylko raz, na najstarszy rok, z którego zostały pobrane dni.
-                if (rokDeduukcji === null) { // Tylko raz przypisujemy najstarszy rok
+                if (rokDeduukcji === null) {
                     rokDeduukcji = rok;
                 }
-                if (dniDoOdjecia === 0) break; // Jeśli wszystkie dni zostały odjęte, przerywamy pętlę.
+                if (dniDoOdjecia === 0) break;
             }
         }
-        this.saveData(); // Zapisujemy zmiany.
-        return rokDeduukcji; // Zwracamy rok, z którego pobrano urlop.
+        this.saveData();
+        return rokDeduukcji;
     }
 
-    // Metoda do zwracania dni urlopu do puli (np. przy modyfikacji lub anulowaniu).
     returnVacationDays(typUrlopu, liczbaDni, rokUrlopu) {
         if (typUrlopu !== 'podstawowy' && typUrlopu !== 'dodatkowy') {
-            return; // Nie zwracamy dni dla L4/opieki.
+            return;
         }
 
         const config = this.konfiguracjeUrlopow.get(rokUrlopu);
@@ -198,51 +158,44 @@ class ZarzadzanieUrlopem {
             let remainingProp = typUrlopu === 'podstawowy' ? 'remainingPodstawowy' : 'remainingDodatkowy';
             let initialProp = typUrlopu === 'podstawowy' ? 'initialPodstawowy' : 'initialDodatkowy';
             
-            // Dodajemy dni, ale nie przekraczamy początkowej wartości dla danego roku, aby uniknąć nadmiaru.
             config[remainingProp] = Math.min(config[initialProp], config[remainingProp] + liczbaDni);
             
-            this.saveData(); // Zapisujemy zmiany.
+            this.saveData();
         }
     }
 
-    // Metoda do zgłaszania nowego urlopu.
     zglosUrlop(typUrlopu, liczbaDni, dataRozpoczecia, adnotacje = '') {
         const start = new Date(dataRozpoczecia);
         const dzisiaj = new Date();
-        dzisiaj.setHours(0,0,0,0); // Ustawiamy godzinę na 00:00:00, aby porównywać tylko daty.
+        dzisiaj.setHours(0,0,0,0);
 
         let isPastDate = false;
         if (start < dzisiaj) {
-            isPastDate = true; // Flaga, jeśli data rozpoczęcia jest w przeszłości.
+            isPastDate = true;
         }
 
-        // Sprawdzenie dostępności urlopu przed faktycznym zgłoszeniem.
-        // Dla nowego zgłoszenia nie ma parametrów isModifying i oldUrlopId.
         const checkResult = this.sprawdzDostepnosc(typUrlopu, liczbaDni);
         if (!checkResult.canTake) {
             return { success: false, message: checkResult.message };
         }
         
-        let rokDeduukcji = new Date(dataRozpoczecia).getFullYear(); // Domyślny rok odjęcia (może być zmieniony przez deductVacationDays).
+        let rokDeduukcji = new Date(dataRozpoczecia).getFullYear();
         if (typUrlopu === 'podstawowy' || typUrlopu === 'dodatkowy') {
-            // Odejmowanie dni z puli urlopowej. deductVacationDays dba o priorytet najstarszych lat.
-            rokDeduukcji = this.deductVacationDays(typUrlopu, liczbaDni, dataRozpoczecia); // Przywrócono dataRozpoczecia
+            rokDeduukcji = this.deductVacationDays(typUrlopu, liczbaDni, dataRozpoczecia);
         }
 
-        // Generowanie unikalnego ID dla wpisu w historii.
         const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
 
-        // Dodanie nowego wpisu do historii urlopów.
         this.historiaUrlopow.push({
             id: id,
             typ: typUrlopu,
             dni: liczbaDni,
             od: dataRozpoczecia,
-            status: 'zatwierdzony', // Domyślny status zgłoszenia.
-            rokUrlopu: rokDeduukcji, // Faktyczny rok, z którego odjęto urlop.
+            status: 'zatwierdzony',
+            rokUrlopu: rokDeduukcji,
             adnotacje: adnotacje
         });
-        this.saveData(); // Zapisanie historii.
+        this.saveData();
 
         let successMessage = `Dni wolne (${typUrlopu}) na ${liczbaDni} dni zgłoszone pomyślnie.`;
         if (isPastDate) {
@@ -252,7 +205,6 @@ class ZarzadzanieUrlopem {
         return { success: true, message: successMessage };
     }
 
-    // Metoda do modyfikowania istniejącego wpisu urlopu.
     modyfikujUrlop(id, nowyTypUrlopu, nowaLiczbaDni, nowaDataRozpoczecia, noweAdnotacje) {
         const index = this.historiaUrlopow.findIndex(urlop => urlop.id === id);
         if (index === -1) {
@@ -261,50 +213,38 @@ class ZarzadzanieUrlopem {
 
         const staryUrlop = this.historiaUrlopow[index];
 
-        // 1. Zwróć dni starego urlopu do puli. Jest to kluczowe przed sprawdzeniem dostępności dla nowej wartości.
         if (staryUrlop.typ === 'podstawowy' || staryUrlop.typ === 'dodatkowy') {
             this.returnVacationDays(staryUrlop.typ, staryUrlop.dni, staryUrlop.rokUrlopu);
         }
 
-        // 2. Sprawdź dostępność dla nowego urlopu.
-        // Ważne: przekazujemy isModifying=true oraz ID starego urlopu do sprawdzDostepnosc,
-        // aby symulacja zwracania dni działała poprawnie.
         if (nowyTypUrlopu === 'podstawowy' || nowyTypUrlopu === 'dodatkowy') {
             const checkResult = this.sprawdzDostepnosc(nowyTypUrlopu, nowaLiczbaDni, true, id); 
             if (!checkResult.canTake) {
-                // Jeśli brak dostępności dla nowego zgłoszenia, musimy przywrócić stary urlop do puli.
-                // Czyli "odejmujemy" dni starego urlopu ponownie, aby cofnąć jego "zwrot".
                 if (staryUrlop.typ === 'podstawowy' || staryUrlop.typ === 'dodatkowy') {
-                    // Ponieważ `returnVacationDays` już zwróciło dni do puli tymczasowej w `sprawdzDostepnosc`,
-                    // tutaj musimy faktycznie odjąć je z oryginalnej puli, aby "przywrócić" stan przed
-                    // próbą modyfikacji, gdy nowa modyfikacja się nie powiodła.
-                    this.deductVacationDays(staryUrlop.typ, staryUrlop.dni, staryUrlop.od); // Przywrócono dataRozpoczecia
+                    this.deductVacationDays(staryUrlop.typ, staryUrlop.dni, staryUrlop.od);
                 }
                 return { success: false, message: `Modyfikacja niemożliwa: ${checkResult.message}` };
             }
         }
         
-        // 3. Odejmij dni nowego urlopu z puli.
         let nowyRokDeduukcji = new Date(nowaDataRozpoczecia).getFullYear();
         if (nowyTypUrlopu === 'podstawowy' || nowyTypUrlopu === 'dodatkowy') {
-            nowyRokDeduukcji = this.deductVacationDays(nowyTypUrlopu, nowaLiczbaDni, nowaDataRozpoczecia); // Przywrócono dataRozpoczecia
+            nowyRokDeduukcji = this.deductVacationDays(nowyTypUrlopu, nowaLiczbaDni, nowaDataRozpoczecia);
         }
 
-        // 4. Zaktualizuj wpis w historii urlopów.
         this.historiaUrlopow[index] = {
-            id: id, // ID pozostaje bez zmian
+            id: id,
             typ: nowyTypUrlopu,
             dni: nowaLiczbaDni,
             od: nowaDataRozpoczecia,
             status: 'zatwierdzony', 
-            rokUrlopu: nowyRokDeduukcji, // Zaktualizowany rok, z którego faktycznie pobrano urlop
+            rokUrlopu: nowyRokDeduukcji,
             adnotacje: noweAdnotacje
         };
-        this.saveData(); // Zapisz zmienioną historię.
+        this.saveData();
         return { success: true, message: "Urlop zmodyfikowany pomyślnie." };
     }
 
-    // Metoda do usuwania urlopu z historii.
     usunUrlop(id) {
         const index = this.historiaUrlopow.findIndex(urlop => urlop.id === id);
         if (index === -1) {
@@ -313,21 +253,17 @@ class ZarzadzanieUrlopem {
 
         const urlopDoUsuniecia = this.historiaUrlopow[index];
 
-        // Zwróć dni do puli, jeśli był to urlop podstawowy lub dodatkowy.
         if (urlopDoUsuniecia.typ === 'podstawowy' || urlopDoUsuniecia.typ === 'dodatkowy') {
             this.returnVacationDays(urlopDoUsuniecia.typ, urlopDoUsuniecia.dni, urlopDoUsuniecia.rokUrlopu);
         }
 
-        // Usuń urlop z tablicy historii.
         this.historiaUrlopow.splice(index, 1);
         this.saveData();
         return { success: true, message: "Urlop usunięty pomyślnie." };
     }
 
-    // Oblicza procent wykorzystania urlopu w stosunku do początkowej, całkowitej puli.
     obliczWykorzystanie() {
         const sumaZgloszonychDniUrlopu = this.historiaUrlopow.reduce((sum, urlop) => {
-            // Sumujemy tylko urlopy podstawowe i dodatkowe do obliczenia wykorzystania.
             if (urlop.typ === 'podstawowy' || urlop.typ === 'dodatkowy') {
                 return sum + urlop.dni;
             }
@@ -337,34 +273,29 @@ class ZarzadzanieUrlopem {
         const calkowityDostepnyUrlop = this.getTotalInitialPodstawowy() + this.getTotalInitialDodatkowy();
 
         if (calkowityDostepnyUrlop === 0) {
-            return 0; // Zapobiega dzieleniu przez zero.
+            return 0;
         }
 
         const procentWykorzystania = (sumaZgloszonychDniUrlopu / calkowityDostepnyUrlop) * 100;
-        return procentWykorzystania.toFixed(2); // Zwraca procent z dwoma miejscami po przecinku.
+        return procentWykorzystania.toFixed(2);
     }
 
-    // Czyści wszystkie dane z konfiguracji i historii urlopów, resetując aplikację.
     wyczyscWszystkieDane() {
-        this.konfiguracjeUrlopow.clear(); // Czyści mapę konfiguracji.
-        this.historiaUrlopow = [];        // Czyści tablicę historii.
-        this.saveData();                  // Zapisuje pusty stan.
+        this.konfiguracjeUrlopow.clear();
+        this.historiaUrlopow = [];
+        this.saveData();
     }
 }
 
-// --- Logika obsługi HTML i interakcji z DOM (interfejsem użytkownika) ---
-
-// Tworzenie instancji klasy zarządzającej urlopem.
 const pracownik = new ZarzadzanieUrlopem();
 
-// Pobieranie referencji do elementów DOM.
 const urlopCalkowityDniEl = document.getElementById('urlopCalkowityDni');
 const urlopPodstawowyDniEl = document.getElementById('urlopPodstawowyDni');
 const urlopDodatkowyDniEl = document.getElementById('urlopDodatkowyDni');
 const wykorzystanieProcentEl = document.getElementById('wykorzystanieProcent');
 const urlopRozbicieNaLataEl = document.getElementById('urlopRozbicieNaLata'); 
 const urlopChartCanvas = document.getElementById('urlopChart');
-let urlopChartInstance; // Zmienna do przechowywania instancji wykresu Chart.js.
+let urlopChartInstance;
 
 const configForm = document.getElementById('configForm');
 const initialPodstawowyInput = document.getElementById('initialPodstawowy');
@@ -383,71 +314,95 @@ const adnotacjeInput = document.getElementById('adnotacje');
 const messageEl = document.getElementById('message');
 const historiaUrlopowList = document.getElementById('historiaUrlopowList');
 
-// --- Przycisk do resetowania danych (dodatkowy element, jeśli chcesz) ---
-const clearDataBtn = document.getElementById('clearAllDataBtn'); // Załóżmy, że masz taki przycisk w HTML
+const clearDataBtn = document.getElementById('clearAllDataBtn');
+const exportDataBtn = document.getElementById('exportDataBtn'); // Nowy przycisk eksportu
+
 if (clearDataBtn) {
     clearDataBtn.addEventListener('click', () => {
         if (confirm('Czy na pewno chcesz wyczyścić WSZYSTKIE dane (konfiguracje i historię urlopów)? Tej operacji nie można cofnąć!')) {
             pracownik.wyczyscWszystkieDane();
             aktualizujStanUrlopow();
             aktualizujHistorieUrlopow();
-            wypelnijSelectLatami(); // Odśwież lata po wyczyszczeniu
+            wypelnijSelectLatami();
             wyswietlKomunikat(messageEl, 'Wszystkie dane zostały wyczyszczone.', 'success');
         }
     });
 }
 
+// Obsługa eksportu danych
+if (exportDataBtn) {
+    exportDataBtn.addEventListener('click', () => {
+        try {
+            const dataToExport = {
+                konfiguracjeUrlopow: Array.from(pracownik.konfiguracjeUrlopow.entries()),
+                historiaUrlopow: pracownik.historiaUrlopow
+            };
+            const jsonData = JSON.stringify(dataToExport, null, 2);
 
-// Funkcja pomocnicza do formatowania daty na polski format (DD.MM.RRRR).
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const date = new Date();
+            const filename = `backup_urlopy_${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}.json`;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            wyswietlKomunikat(messageEl, `Dane pomyślnie wyeksportowano do pliku: ${filename}`, 'success');
+
+        } catch (error) {
+            console.error("Błąd podczas eksportowania danych:", error);
+            wyswietlKomunikat(messageEl, 'Wystąpił błąd podczas eksportowania danych. Sprawdź konsolę przeglądarki.', 'error');
+        }
+    });
+}
+
+
 function formatujDateNaPolski(dataString) {
     const data = new Date(dataString);
     const dzien = String(data.getDate()).padStart(2, '0');
-    const miesiac = String(data.getMonth() + 1).padStart(2, '0'); // Miesiące są od 0 do 11
+    const miesiac = String(data.getMonth() + 1).padStart(2, '0');
     const rok = data.getFullYear();
     return `${dzien}.${miesiac}.${rok}`;
 }
 
-// Funkcja pomocnicza do wyświetlania komunikatów użytkownikowi (sukces, błąd, informacja).
 function wyswietlKomunikat(el, msg, type) {
-    if (!el) return; // Zabezpieczenie na wypadek braku elementu
+    if (!el) return;
     el.textContent = msg;
     el.className = `message ${type}`;
-    // Komunikat znika po 5 sekundach.
     setTimeout(() => {
         el.textContent = '';
         el.className = 'message';
     }, 5000); 
 }
 
-// Aktualizuje sekcję "Aktualny Stan Urlopów" na pulpicie.
 function aktualizujStanUrlopow() {
-    // Sprawdź, czy elementy istnieją przed próbą ustawienia ich tekstu
     if (urlopCalkowityDniEl) urlopCalkowityDniEl.textContent = pracownik.getTotalRemainingPodstawowy() + pracownik.getTotalRemainingDodatkowy();
     if (urlopPodstawowyDniEl) urlopPodstawowyDniEl.textContent = pracownik.getTotalRemainingPodstawowy();
     if (urlopDodatkowyDniEl) urlopDodatkowyDniEl.textContent = pracownik.getTotalRemainingDodatkowy();
     if (wykorzystanieProcentEl) wykorzystanieProcentEl.textContent = pracownik.obliczWykorzystanie();
     
-    aktualizujRozbicieNaLata(); // Aktualizuje sekcję rozbicia urlopów na lata.
-    aktualizujWykresUrlopu();    // Aktualizuje wykres wizualizujący wykorzystanie urlopu.
+    aktualizujRozbicieNaLata();
+    aktualizujWykresUrlopu();
 }
 
-// Aktualizuje listę historii zgłoszonych dni wolnych.
 function aktualizujHistorieUrlopow() {
-    if (!historiaUrlopowList) return; // Upewnij się, że element istnieje
+    if (!historiaUrlopowList) return;
 
-    historiaUrlopowList.innerHTML = ''; // Czyści bieżącą listę.
+    historiaUrlopowList.innerHTML = '';
     if (pracownik.historiaUrlopow.length === 0) {
         historiaUrlopowList.innerHTML = '<li>Brak zgłoszonych dni wolnych.</li>';
         return;
     }
-    // Sortowanie historii od najnowszych wpisów do najstarszych.
     const posortowanaHistoria = [...pracownik.historiaUrlopow].sort((a, b) => new Date(b.od) - new Date(a.od));
 
     posortowanaHistoria.forEach((urlop) => {
         const listItem = document.createElement('li');
         const dataOd = formatujDateNaPolski(urlop.od);
         let typTekst = '';
-        // Ustawienie wyświetlanej nazwy typu urlopu.
         switch(urlop.typ) {
             case 'podstawowy': typTekst = 'Urlop podstawowy'; break;
             case 'dodatkowy': typTekst = 'Urlop dodatkowy'; break;
@@ -471,27 +426,22 @@ function aktualizujHistorieUrlopow() {
         historiaUrlopowList.appendChild(listItem);
     });
 
-    // Dodawanie słuchaczy zdarzeń dla przycisków edycji w historii.
     document.querySelectorAll('.edit-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const idToEdit = event.target.dataset.id;
             const urlopToEdit = pracownik.historiaUrlopow.find(u => u.id === idToEdit);
             if (urlopToEdit) {
-                // Wypełnienie formularza danymi edytowanego urlopu.
                 if (typUrlopuSelect) typUrlopuSelect.value = urlopToEdit.typ;
                 if (liczbaDniInput) liczbaDniInput.value = urlopToEdit.dni;
                 if (dataRozpoczeciaInput) dataRozpoczeciaInput.value = urlopToEdit.od;
                 if (adnotacjeInput) adnotacjeInput.value = urlopToEdit.adnotacje || '';
                 
-                // Zmiana tekstu przycisku submit i ustawienie ID edytowanego elementu
-                // w data-attribute formularza, aby zasygnalizować tryb edycji.
                 const submitButton = urlopForm.querySelector('button[type="submit"]');
                 if (submitButton) submitButton.textContent = 'Zapisz zmiany (Edycja)';
                 if (urlopForm) urlopForm.dataset.editingId = idToEdit; 
                 if (messageEl) wyswietlKomunikat(messageEl, 'Edytujesz istniejący wpis. Zmień dane i kliknij "Zapisz zmiany".', 'info');
                 
-                // Przewinięcie do formularza edycji
-                const editFormSection = document.getElementById('urlopForm'); // Zmieniono na ID samego formularza, który jest bliżej edytowalnych pól
+                const editFormSection = document.getElementById('urlopForm');
                 if (editFormSection) {
                     editFormSection.scrollIntoView({
                         behavior: 'smooth',
@@ -502,7 +452,6 @@ function aktualizujHistorieUrlopow() {
         });
     });
 
-    // Dodawanie słuchaczy zdarzeń dla NOWYCH przycisków usuwania.
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', (event) => {
             const idToDelete = event.target.dataset.id;
@@ -510,10 +459,8 @@ function aktualizujHistorieUrlopow() {
                 const wynikUsuniecia = pracownik.usunUrlop(idToDelete);
                 if (wynikUsuniecia.success) {
                     wyswietlKomunikat(messageEl, wynikUsuniecia.message, 'success');
-                    aktualizujStanUrlopow();    // Odśwież stan urlopów
-                    aktualizujHistorieUrlopow(); // Odśwież listę historii
-                    // Dodatkowo, jeśli usuwamy urlop, który był właśnie edytowany,
-                    // należy zresetować formularz edycji.
+                    aktualizujStanUrlopow();
+                    aktualizujHistorieUrlopow();
                     const editingId = urlopForm.dataset.editingId;
                     if (editingId === idToDelete) {
                         urlopForm.reset();
@@ -530,9 +477,8 @@ function aktualizujHistorieUrlopow() {
     });
 }
 
-// Aktualizuje sekcję z rozbiciem urlopów na poszczególne lata
 function aktualizujRozbicieNaLata() {
-    if (!urlopRozbicieNaLataEl) return; // Upewnij się, że element istnieje
+    if (!urlopRozbicieNaLataEl) return;
 
     urlopRozbicieNaLataEl.innerHTML = ''; 
 
@@ -541,15 +487,13 @@ function aktualizujRozbicieNaLata() {
         return;
     }
 
-    // Sortowanie lat, aby wyświetlały się w kolejności chronologicznej
     const posortowaneLata = Array.from(pracownik.konfiguracjeUrlopow.keys()).sort((a, b) => a - b);
 
-    let anyYearDisplayed = false; // Flaga do sprawdzenia, czy jakikolwiek rok został wyświetlony
+    let anyYearDisplayed = false;
 
     posortowaneLata.forEach(rok => {
         const config = pracownik.konfiguracjeUrlopow.get(rok);
         
-        // Warunek: wyświetlaj rok tylko jeśli pozostały urlop podstawowy LUB dodatkowy jest większy od 0
         if (config && (config.remainingPodstawowy > 0 || config.remainingDodatkowy > 0)) {
             const pElement = document.createElement('p');
             pElement.innerHTML = `
@@ -562,35 +506,29 @@ function aktualizujRozbicieNaLata() {
         }
     });
 
-    // Jeśli po przefiltrowaniu żaden rok nie został wyświetlony
     if (!anyYearDisplayed) {
         urlopRozbicieNaLataEl.innerHTML = '<p>Brak dostępnych dni urlopu w konfiguracji rocznej.</p>';
     }
 }
 
-// Aktualizuje i renderuje wykres kołowy wizualizujący wykorzystanie urlopu.
 function aktualizujWykresUrlopu() {
-    if (!urlopChartCanvas) return; // Upewnij się, że canvas istnieje
+    if (!urlopChartCanvas) return;
 
     const totalInitial = pracownik.getTotalInitialPodstawowy() + pracownik.getTotalInitialDodatkowy();
     const totalRemaining = pracownik.getTotalRemainingPodstawowy() + pracownik.getTotalRemainingDodatkowy();
-    const totalUsed = totalInitial - totalRemaining; // Obliczenie wykorzystanych dni.
+    const totalUsed = totalInitial - totalRemaining;
 
     const ctx = urlopChartCanvas.getContext('2d');
 
-    // Niszczy poprzednią instancję wykresu Chart.js, aby uniknąć nakładania się i błędów.
     if (urlopChartInstance) {
         urlopChartInstance.destroy();
     }
     
-    // Sprawdź, czy są dane do wyświetlenia na wykresie
     if (totalInitial === 0 && totalUsed === 0 && totalRemaining === 0) {
-        ctx.clearRect(0, 0, urlopChartCanvas.width, urlopChartCanvas.height); // Czyści canvas
-        // Możesz tutaj wyświetlić komunikat na canvasie, np. "Brak danych do wykresu"
+        ctx.clearRect(0, 0, urlopChartCanvas.width, urlopChartCanvas.height);
         return;
     }
 
-    // Tworzenie nowej instancji wykresu kołowego.
     urlopChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -598,8 +536,8 @@ function aktualizujWykresUrlopu() {
             datasets: [{
                 data: [totalUsed, totalRemaining],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.8)', // Czerwony dla wykorzystanego.
-                    'rgba(75, 192, 192, 0.8)'  // Zielony dla pozostałego.
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(75, 192, 192, 0.8)'
                 ],
                 borderColor: [
                     'rgba(255, 99, 132, 1)',
@@ -614,7 +552,7 @@ function aktualizujWykresUrlopu() {
                 legend: {
                     position: 'top',
                     labels: {
-                        color: '#f0f0f0' // Kolor tekstu legendy dla lepszej czytelności na ciemnym tle.
+                        color: '#f0f0f0'
                     }
                 },
                 tooltip: {
@@ -625,7 +563,7 @@ function aktualizujWykresUrlopu() {
                                 label += ': ';
                             }
                             if (context.parsed !== null) {
-                                label += context.parsed + ' dni'; // Wyświetla liczbę dni w dymku.
+                                label += context.parsed + ' dni';
                             }
                             return label;
                         }
@@ -636,34 +574,30 @@ function aktualizujWykresUrlopu() {
     });
 }
 
-// Wypełnia listę rozwijaną latami w sekcji konfiguracji urlopów.
 function wypelnijSelectLatami() {
-    if (!selectYearEl) return; // Upewnij się, że element istnieje
+    if (!selectYearEl) return;
 
     const currentYear = new Date().getFullYear(); 
-    const startYear = currentYear - 10;        // Lata od 10 lat wstecz od bieżącego.
-    const endYear = currentYear + 1;           // Do roku bieżącego + 1 (dla konfiguracji przyszłego roku)
+    const startYear = currentYear - 10;
+    const endYear = currentYear + 1;
 
-    selectYearEl.innerHTML = ''; // Czyści istniejące opcje.
+    selectYearEl.innerHTML = '';
 
     for (let year = startYear; year <= endYear; year++) {
         const option = document.createElement('option');
         option.value = year;
         option.textContent = year;
         if (year === currentYear) {
-            option.selected = true; // Domyślnie zaznacza bieżący rok.
+            option.selected = true;
         }
         selectYearEl.appendChild(option);
     }
     
-    // Ustawia wartości początkowe pól formularza na podstawie wybranego roku
-    // po wypełnieniu listy rozwijanej (domyślnie bieżący rok).
-    zaktualizujEtykietyRoku(); // Wywołujemy tę funkcję, aby załadować dane dla wybranego roku
+    zaktualizujEtykietyRoku();
 }
 
-// Aktualizuje etykiety pól formularza konfiguracji, aby pokazywały wybrany rok.
 function zaktualizujEtykietyRoku() {
-    if (!selectYearEl || !initialPodstawowyInput || !initialDodatkowyInput) return; // Upewnij się, że elementy istnieją
+    if (!selectYearEl || !initialPodstawowyInput || !initialDodatkowyInput) return;
 
     const wybranyRok = parseInt(selectYearEl.value);
     if (labelDodatkowyEl) {
@@ -673,7 +607,6 @@ function zaktualizujEtykietyRoku() {
         labelPodstawowyEl.textContent = `Początkowy urlop podstawowy (dni, za rok ${wybranyRok}):`;
     }
 
-    // Ładuje wartości konfiguracji dla wybranego roku do pól formularza.
     const configForSelectedYear = pracownik.konfiguracjeUrlopow.get(wybranyRok);
     if (configForSelectedYear) {
         initialPodstawowyInput.value = configForSelectedYear.initialPodstawowy;
@@ -685,25 +618,20 @@ function zaktualizujEtykietyRoku() {
 }
 
 
-// --- Obsługa zdarzeń ---
-
-// Obsługa formularza konfiguracji urlopów.
 if (configForm) {
     configForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Zapobiega domyślnemu przeładowaniu strony.
+        event.preventDefault();
 
         const selectedYear = parseInt(selectYearEl.value);
         const initialPodstawowy = parseInt(initialPodstawowyInput.value);
         const initialDodatkowy = parseInt(initialDodatkowyInput.value);
 
-        // Walidacja danych wejściowych.
         if (isNaN(initialPodstawowy) || isNaN(initialDodatkowy) ||
             initialPodstawowy < 0 || initialDodatkowy < 0 || isNaN(selectedYear)) {
             wyswietlKomunikat(configMessageEl, 'Wszystkie wartości muszą być liczbami nieujemnymi, a rok musi być wybrany.', 'error');
             return;
         }
 
-        // Potwierdzenie użytkownika przed zmianą konfiguracji, ponieważ resetuje dni dla danego roku.
         const potwierdzenie = confirm(`Czy na pewno chcesz ustawić/zaktualizować konfigurację urlopów za rok ${selectedYear}? Spowoduje to zresetowanie dostępnych dni urlopu TYLKO dla tego roku do wartości początkowych.`);
         if (!potwierdzenie) {
             wyswietlKomunikat(configMessageEl, 'Zmiana konfiguracji anulowana.', 'info');
@@ -712,63 +640,52 @@ if (configForm) {
 
         pracownik.ustawKonfiguracje(initialPodstawowy, initialDodatkowy, selectedYear);
 
-        // Aktualizacja widoku po zmianie konfiguracji.
         aktualizujStanUrlopow();
-        aktualizujHistorieUrlopow(); // Historia mogła się zmienić (np. poprzez przypisanie urlopu do innego roku).
+        aktualizujHistorieUrlopow();
         wyswietlKomunikat(configMessageEl, `Konfiguracja urlopów za rok ${selectedYear} zaktualizowana pomyślnie.`, 'success');
     });
 }
 
-// Obsługa zmiany roku w selekcie konfiguracji
 if (selectYearEl) {
     selectYearEl.addEventListener('change', zaktualizujEtykietyRoku);
 }
 
 
-// Obsługa formularza zgłaszania/modyfikacji dni wolnych.
 if (urlopForm) {
     urlopForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Zapobiega domyślnemu przeładowaniu strony.
+        event.preventDefault();
 
         const typUrlopu = typUrlopuSelect.value;
         const liczbaDni = parseInt(liczbaDniInput.value);
         const dataRozpoczecia = dataRozpoczeciaInput.value;
         const adnotacje = adnotacjeInput.value.trim();
 
-        // Walidacja liczby dni.
         if (isNaN(liczbaDni) || liczbaDni <= 0) {
             wyswietlKomunikat(messageEl, 'Liczba dni musi być liczbą większą od zera.', 'error');
             return;
         }
-        // Walidacja daty rozpoczęcia
         if (!dataRozpoczecia) {
             wyswietlKomunikat(messageEl, 'Proszę wybrać datę rozpoczęcia.', 'error');
             return;
         }
 
-
-        // Walidacja, czy konfiguracja urlopu istnieje, jeśli typ urlopu to podstawowy lub dodatkowy.
         if ((typUrlopu === 'podstawowy' || typUrlopu === 'dodatkowy') && pracownik.konfiguracjeUrlopow.size === 0) {
             wyswietlKomunikat(messageEl, 'Najpierw ustaw początkową liczbę dni urlopu w sekcji "Konfiguracja Urlopów" dla co najmniej jednego roku.', 'error');
             return;
         }
         
         let wynik;
-        const editingId = urlopForm.dataset.editingId; // Sprawdź, czy formularz jest w trybie edycji.
+        const editingId = urlopForm.dataset.editingId;
         
         if (editingId) {
-            // Tryb edycji
             wynik = pracownik.modyfikujUrlop(editingId, typUrlopu, liczbaDni, dataRozpoczecia, adnotacje);
         } else {
-            // Tryb nowego zgłoszenia
             wynik = pracownik.zglosUrlop(typUrlopu, liczbaDni, dataRozpoczecia, adnotacje);
         }
 
         if (wynik.success) {
             wyswietlKomunikat(messageEl, wynik.message, 'success');
-            // Zresetuj formularz po udanym zgłoszeniu/modyfikacji.
             urlopForm.reset();
-            // Przywróć tekst przycisku submit i usuń data-attribute
             const submitButton = urlopForm.querySelector('button[type="submit"]');
             if (submitButton) submitButton.textContent = 'Zgłoś Urlop';
             delete urlopForm.dataset.editingId;
@@ -777,16 +694,14 @@ if (urlopForm) {
             wyswietlKomunikat(messageEl, wynik.message, 'error');
         }
 
-        // Zawsze aktualizuj widok po próbie zgłoszenia/modyfikacji, nawet jeśli się nie powiodła.
         aktualizujStanUrlopow();
         aktualizujHistorieUrlopow();
     });
 }
 
-// Inicjalizacja aplikacji po załadowaniu DOM.
 document.addEventListener('DOMContentLoaded', function() {
-    pracownik.loadData(); // Upewniamy się, że dane są załadowane na starcie.
-    wypelnijSelectLatami(); // Wypełnij select rokiem
-    aktualizujStanUrlopow(); // Aktualizuj wszystkie dane na starcie
-    aktualizujHistorieUrlopow(); // Wyświetl historię
+    pracownik.loadData();
+    wypelnijSelectLatami();
+    aktualizujStanUrlopow();
+    aktualizujHistorieUrlopow();
 });
