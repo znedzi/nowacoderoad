@@ -4,8 +4,8 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #222; /* Dark background */
-    color: #f0f0f0; /* Light text */
+    background-color: #121A22; /* Bardzo ciemny granat/prawie czarny */
+    color: #f8f9fa; /* Kremowy biały tekst */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -19,11 +19,11 @@ body {
 
 /* Header */
 header {
-    background-color: #333;
-    color: #f0f0f0;
+    background-color: #1A2530; /* Ciemniejszy granat */
+    color: #f8f9fa;
     padding: 1rem 0;
     text-align: center;
-    border-bottom: 3px solid #007bff;
+    border-bottom: 3px solid #d9534f; /* Stonowana czerwień/terakota */
 }
 
 header h1 {
@@ -33,29 +33,29 @@ header h1 {
 
 /* Main Content */
 main {
-    flex: 1; /* Allows main content to grow and push footer down */
+    flex: 1; 
     padding: 20px;
     max-width: 1000px;
     margin: 20px auto;
-    background-color: #333; /* Slightly lighter dark background for content */
+    background-color: #1A2530; /* Ciemniejszy granat dla kontentu */
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); /* Mocniejszy cień */
 }
 
 section {
     margin-bottom: 40px;
     padding: 20px;
-    background-color: #444; /* Darker background for sections */
+    background-color: #212D3B; /* Średnio ciemny granat dla sekcji */
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4); /* Mocniejszy cień */
 }
 
 section h2 {
-    color: #007bff; /* Accent color for headings */
+    color: #d9534f; /* Stonowana czerwień/terakota dla nagłówków */
     text-align: center;
     margin-bottom: 25px;
     font-size: 2rem;
-    border-bottom: 2px solid #007bff;
+    border-bottom: 2px solid #d9534f;
     padding-bottom: 10px;
 }
 
@@ -69,13 +69,13 @@ section h2 {
 }
 
 .card {
-    background-color: #555;
+    background-color: #2A3847; /* Lżejszy granat dla kart */
     padding: 20px;
     border-radius: 8px;
     text-align: center;
     min-width: 200px;
     flex: 1;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease-in-out;
 }
 
@@ -85,30 +85,30 @@ section h2 {
 
 .card h3 {
     margin-top: 0;
-    color: #f0f0f0;
+    color: #f8f9fa;
     font-size: 1.2rem;
 }
 
 .card p {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #007bff;
+    color: #e67e22; /* Bardziej stonowany pomarańcz/bursztyn dla liczb */
     margin: 10px 0 0;
 }
 
 .dni-ilosc {
-    font-size: 1.5rem; /* For yearly breakdown */
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #007bff;
+    color: #e67e22; /* Bardziej stonowany pomarańcz/bursztyn */
 }
 
 /* Chart Container */
 .chart-container {
-    background-color: #555;
+    background-color: #2A3847;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 30px;
-    height: 350px; /* Fixed height for chart */
+    height: 350px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -118,27 +118,27 @@ section h2 {
 .yearly-breakdown {
     text-align: center;
     padding: 15px;
-    background-color: #555;
+    background-color: #2A3847;
     border-radius: 8px;
 }
 
 .yearly-breakdown p {
     margin: 8px 0;
     font-size: 1.1rem;
-    color: #f0f0f0;
+    color: #f8f9fa;
 }
 
 .yearly-breakdown .rok {
     font-weight: bold;
-    color: #007bff;
+    color: #e67e22; /* Bardziej stonowany pomarańcz/bursztyn */
 }
 
 /* Form Styles */
 form {
-    background-color: #555;
+    background-color: #2A3847;
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 .form-group {
@@ -149,7 +149,7 @@ form {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #f0f0f0;
+    color: #f8f9fa;
 }
 
 .form-group input[type="number"],
@@ -158,22 +158,22 @@ form {
 .form-group textarea {
     width: calc(100% - 20px);
     padding: 12px 10px;
-    border: 1px solid #777;
+    border: 1px solid #3F4E5E; /* Ciemniejsza ramka */
     border-radius: 5px;
-    background-color: #666;
-    color: #f0f0f0;
+    background-color: #384555; /* Średnio jasny granat */
+    color: #f8f9fa;
     font-size: 1rem;
-    box-sizing: border-box; /* Include padding in width */
+    box-sizing: border-box;
 }
 
 .form-group input[type="number"]::placeholder,
 .form-group input[type="date"]::placeholder,
 .form-group textarea::placeholder {
-    color: #bbb;
+    color: #c4ccd4; /* Jaśniejszy placeholder */
 }
 
 button[type="submit"] {
-    background-color: #007bff;
+    background-color: #d9534f; /* Stonowana czerwień/terakota */
     color: white;
     padding: 12px 25px;
     border: none;
@@ -187,17 +187,17 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #c9302c; /* Ciemniejsza czerwień na hover */
     transform: translateY(-2px);
 }
 
 /* Admin section buttons */
 .admin-section button {
-    margin-bottom: 10px; /* Adds space between buttons */
+    margin-bottom: 10px;
 }
 
 .clear-btn {
-    background-color: #dc3545; /* Red color for clear button */
+    background-color: #dc3545; /* Klasyczna czerwień dla przycisku wyczyść */
     color: white;
     padding: 12px 25px;
     border: none;
@@ -215,7 +215,7 @@ button[type="submit"]:hover {
 }
 
 .export-btn {
-    background-color: #28a745; /* Green color for export button */
+    background-color: #28a745; /* Klasyczna zieleń dla przycisku eksportu */
     color: white;
     padding: 12px 25px;
     border: none;
@@ -223,7 +223,7 @@ button[type="submit"]:hover {
     cursor: pointer;
     font-size: 1.1rem;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 15px; /* Spacing from the previous button */
+    margin-top: 15px;
     display: block;
     width: auto;
     margin-left: auto;
@@ -235,9 +235,8 @@ button[type="submit"]:hover {
     transform: translateY(-2px);
 }
 
-/* Style for the new import button */
 .import-btn {
-    background-color: #6f42c1; /* Purple color for import button */
+    background-color: #6c5ce7; /* Bardziej stonowany fiolet dla importu */
     color: white;
     padding: 12px 25px;
     border: none;
@@ -245,7 +244,7 @@ button[type="submit"]:hover {
     cursor: pointer;
     font-size: 1.1rem;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 15px; /* Spacing from the previous button */
+    margin-top: 15px;
     display: block;
     width: auto;
     margin-left: auto;
@@ -253,7 +252,7 @@ button[type="submit"]:hover {
 }
 
 .import-btn:hover {
-    background-color: #59359a;
+    background-color: #5548d1;
     transform: translateY(-2px);
 }
 
@@ -268,17 +267,17 @@ button[type="submit"]:hover {
 }
 
 .message.success {
-    background-color: #28a745;
+    background-color: #28a745; /* Zieleń dla sukcesu */
     color: white;
 }
 
 .message.error {
-    background-color: #dc3545;
+    background-color: #dc3545; /* Czerwień dla błędu */
     color: white;
 }
 
 .message.info {
-    background-color: #17a2b8;
+    background-color: #17a2b8; /* Błękit dla informacji */
     color: white;
 }
 
@@ -289,39 +288,39 @@ button[type="submit"]:hover {
 }
 
 .history-section li {
-    background-color: #555;
+    background-color: #2A3847; /* Przyciemnione tło dla elementów listy historii */
     padding: 15px 20px;
     margin-bottom: 10px;
     border-radius: 8px;
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    justify-content: space-between; /* To push buttons to the right */
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .historia-info {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    flex-grow: 1; /* Allow info to take available space */
+    flex-grow: 1;
     color: #e0e0e0;
 }
 
 .historia-info span {
-    white-space: nowrap; /* Prevent breaking of individual info pieces */
+    white-space: nowrap;
 }
 
 .historia-info span:first-child {
     font-weight: bold;
-    color: #007bff;
+    color: #e67e22; /* Stonowany pomarańcz/bursztyn dla wyróżnienia typu urlopu */
 }
 
 .adnotacja {
     font-style: italic;
-    color: #bbb;
+    color: #c4ccd4;
     font-size: 0.9em;
-    width: 100%; /* Take full width below main info */
+    width: 100%;
     margin-top: 10px;
 }
 
@@ -334,7 +333,7 @@ button[type="submit"]:hover {
 }
 
 .edit-btn, .delete-btn {
-    background-color: #ffc107;
+    background-color: #ffc107; /* Złoty żółty dla edycji (pasuje do stonowanego pomarańczu) */
     color: #333;
     padding: 8px 15px;
     border: none;
@@ -349,7 +348,7 @@ button[type="submit"]:hover {
 }
 
 .delete-btn {
-    background-color: #dc3545;
+    background-color: #dc3545; /* Klasyczna czerwień dla usunięcia */
     color: white;
 }
 
@@ -359,12 +358,12 @@ button[type="submit"]:hover {
 
 /* Footer */
 footer {
-    background-color: #333;
-    color: #f0f0f0;
+    background-color: #1A2530;
+    color: #f8f9fa;
     text-align: center;
     padding: 1rem 0;
     margin-top: 30px;
-    border-top: 3px solid #007bff;
+    border-top: 3px solid #d9534f;
 }
 
 /* Responsive Design */
