@@ -16,7 +16,9 @@
                 <label for="selectYear">Wybierz rok konfiguracji urlopu:</label>
                 <select id="selectYear" required>
                     </select>
-                <br><br> <label for="initialDodatkowy" id="labelDodatkowy">Początkowy urlop dodatkowy (dni, za wybrany rok):</label>
+                <br><br>
+
+                <label for="initialDodatkowy" id="labelDodatkowy">Początkowy urlop dodatkowy (dni, za wybrany rok):</label>
                 <input type="number" id="initialDodatkowy" value="9" min="0" required>
 
                 <label for="initialPodstawowy" id="labelPodstawowy">Początkowy urlop podstawowy (dni, za wybrany rok):</label>
@@ -33,6 +35,10 @@
             <p>Urlop podstawowy (pozostało): <span id="urlopPodstawowyDni"></span> dni</p>
             <p>Urlop dodatkowy (pozostało): <span id="urlopDodatkowyDni"></span> dni</p>
             <p>Wykorzystanie urlopu: <span id="wykorzystanieProcent"></span>%</p>
+            
+            <hr> <h3>Rozbicie na lata:</h3>
+            <div id="urlopRozbicieNaLata">
+                </div>
         </div>
 
         <div class="form-section">

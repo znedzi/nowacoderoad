@@ -87,6 +87,37 @@ h1, h2 {
     color: #79c0ff; /* Jaśniejszy niebieski dla wartości */
 }
 
+/* Style dla rozbicia na lata */
+#urlopRozbicieNaLata {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px dashed #555; /* Lekka ramka */
+    border-radius: 4px;
+    background-color: #4a4a4a; /* Lekko ciemniejsze tło */
+}
+
+#urlopRozbicieNaLata p {
+    margin: 5px 0;
+    font-size: 0.95em;
+    display: flex;
+    justify-content: space-between;
+}
+
+#urlopRozbicieNaLata span {
+    font-weight: normal; /* Przywracamy normalną wagę dla rozbicia, żeby nie konkurowało z sumą */
+    color: #f0f0f0; /* Normalny kolor tekstu */
+}
+
+#urlopRozbicieNaLata .rok {
+    font-weight: bold;
+    color: #a0d9ff; /* Kolor dla roku */
+}
+
+#urlopRozbicieNaLata .dni-ilosc {
+    color: #90ee90; /* Kolor dla ilości dni, np. jasnozielony */
+}
+
+
 .form-section label {
     display: block;
     margin-bottom: 8px;
