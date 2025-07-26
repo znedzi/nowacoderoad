@@ -1,0 +1,168 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a; /* Czarne tło */
+    color: #f0f0f0; /* Jasny tekst dla kontrastu */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 20px;
+}
+
+.container {
+    background-color: #2b2b2b; /* Ciemniejszy odcień szarości dla kontenera */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Cień dostosowany do ciemnego tła */
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    color: #4da6ff; /* Jasnoniebieski dla nagłówków */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Nowa sekcja konfiguracji */
+.config-section {
+    background-color: #3a3a3a; /* Ciemniejszy odcień dla sekcji */
+    border: 1px solid #555; /* Ciemniejsza ramka */
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.config-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.config-section input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #666;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #4a4a4a;
+    color: #f0f0f0;
+}
+
+.config-section button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.config-section button:hover {
+    background-color: #0056b3;
+}
+
+
+.current-status, .form-section, .history-section {
+    background-color: #3a3a3a; /* Ciemniejszy odcień dla sekcji */
+    border: 1px solid #555; /* Ciemniejsza ramka */
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.current-status p {
+    font-size: 1.1em;
+    margin: 5px 0;
+}
+
+.current-status span {
+    font-weight: bold;
+    color: #79c0ff; /* Jaśniejszy niebieski dla wartości */
+}
+
+.form-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-section input[type="number"],
+.form-section input[type="date"],
+.form-section select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #666; /* Ciemniejsza ramka dla pól input */
+    border-radius: 4px;
+    box-sizing: border-box; /* Ważne, aby padding nie zwiększał szerokości */
+    background-color: #4a4a4a; /* Ciemniejsze tło dla pól input */
+    color: #f0f0f0; /* Jasny tekst w polach input */
+}
+
+/* Dostosowanie kalendarza (input type="date") */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Odwraca kolory ikony kalendarza dla ciemnego tła */
+}
+
+
+.form-section button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.form-section button:hover {
+    background-color: #0056b3;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.message.success {
+    background-color: #388e3c; /* Ciemniejsza zieleń */
+    color: #d4edda; /* Jasny tekst */
+    border-color: #2e7d32;
+}
+
+.message.error {
+    background-color: #d32f2f; /* Ciemniejsza czerwień */
+    color: #f8d7da; /* Jasny tekst */
+    border-color: #c62828;
+}
+
+.history-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.history-section li {
+    background-color: #4a4a4a; /* Ciemniejszy odcień dla elementów listy */
+    border: 1px solid #666;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-section li span {
+    font-weight: bold;
+}

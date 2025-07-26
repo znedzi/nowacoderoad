@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Zarządzania Urlopem</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>System Zarządzania Urlopem</h1>
+
+        <div class="config-section">
+            <h2>Konfiguracja Urlopów</h2>
+            <form id="configForm">
+                <label for="initialPodstawowy">Początkowy urlop podstawowy (dni):</label>
+                <input type="number" id="initialPodstawowy" value="26" min="0" required>
+
+                <label for="initialDodatkowy">Początkowy urlop dodatkowy (dni):</label>
+                <input type="number" id="initialDodatkowy" value="9" min="0" required>
+
+                <button type="submit">Ustaw Konfigurację</button>
+            </form>
+            <p id="configMessage" class="message"></p>
+        </div>
+
+        <div class="current-status">
+            <h2>Aktualny Stan Urlopów</h2>
+            <p>Całkowity dostępny urlop: <span id="urlopCalkowityDni"></span> dni</p>
+            <p>Urlop podstawowy (pozostało): <span id="urlopPodstawowyDni"></span> dni</p>
+            <p>Urlop dodatkowy (pozostało): <span id="urlopDodatkowyDni"></span> dni</p>
+            <p>Wykorzystanie urlopu: <span id="wykorzystanieProcent"></span>%</p>
+        </div>
+
+        <div class="form-section">
+            <h2>Zgłoś Wykorzystany Urlop</h2>
+            <form id="urlopForm">
+                <label for="typUrlopu">Typ urlopu:</label>
+                <select id="typUrlopu" required>
+                    <option value="podstawowy">Urlop Podstawowy</option>
+                    <option value="dodatkowy">Urlop Dodatkowy</option>
+                </select>
+
+                <label for="liczbaDni">Liczba dni:</label>
+                <input type="number" id="liczbaDni" min="1" required>
+
+                <label for="dataRozpoczecia">Data rozpoczęcia:</label>
+                <input type="date" id="dataRozpoczecia" required>
+
+                <button type="submit">Zgłoś Urlop</button>
+            </form>
+            <p id="message" class="message"></p>
+        </div>
+
+        <div class="history-section">
+            <h2>Historia Zgłoszonych Urlopów</h2>
+            <ul id="historiaUrlopowList">
+                </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Urlop Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>Zarządzanie urlopem</h2>
+
+  <label>Data: <input type="date" id="date"></label>
+  <label>Typ:
+    <select id="type">
+      <option value="Wypoczynkowy">Wypoczynkowy</option>
+      <option value="Dodatkowy">Dodatkowy</option>
+    </select>
+  </label>
+  <label>Dni: <input type="number" id="days" min="1" max="10"></label>
+  <button onclick="addLeave()">Dodaj urlop</button>
+
+  <h3>Wypoczynkowy: <span id="wypoczynkowy">0</span> dni</h3>
+<h3>Dodatkowy: <span id="dodatkowy">0</span> dni</h3>
+<h3>Razem: <span id="used">0</span> / 35</h3>
+<h3>Pozostało: <span id="remaining">35</span></h3>
+
+
+  <table id="leaveTable">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Typ urlopu</th>
+        <th>Liczba dni</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let leaves = [];
+    const totalLeave = 35;
+
+    function addLeave() {
+      const date = document.getElementById("date").value;
+      const type = document.getElementById("type").value;
+      const days = parseInt(document.getElementById("days").value);
+
+      if (!date || !days || days < 1) return alert("Uzupełnij wszystkie pola.");
+
+      leaves.push({ date, type, days });
+      updateTable();
+    }
+
+    function updateTable() {
+      const tbody = document.querySelector("#leaveTable tbody");
+      tbody.innerHTML = "";
+
+      let used = 0;
+      leaves.forEach(leave => {
+        used += leave.days;
+        const row = `<tr><td>${leave.date}</td><td>${leave.type}</td><td>${leave.days}</td></tr>`;
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById("used").textContent = used;
+      document.getElementById("remaining").textContent = totalLeave - used;
+    }
+  </script>
+
+</body>
+</html>
