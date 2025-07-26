@@ -235,6 +235,28 @@ button[type="submit"]:hover {
     transform: translateY(-2px);
 }
 
+/* Style for the new import button */
+.import-btn {
+    background-color: #6f42c1; /* Purple color for import button */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 15px; /* Spacing from the previous button */
+    display: block;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.import-btn:hover {
+    background-color: #59359a;
+    transform: translateY(-2px);
+}
+
 
 /* Messages (success, error, info) */
 .message {

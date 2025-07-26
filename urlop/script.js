@@ -23,6 +23,13 @@ class ZarzadzanieUrlopem {
         }
     }
 
+    // Nowa metoda do ustawiania danych z zaimportowanego pliku
+    setAllData(konfiguracjeUrlopowArray, historiaUrlopowArray) {
+        this.konfiguracjeUrlopow = new Map(konfiguracjeUrlopowArray);
+        this.historiaUrlopow = historiaUrlopowArray;
+        this.saveData(); // Zapisz nowe dane od razu
+    }
+
     ustawKonfiguracje(podstawowy, dodatkowy, rok) {
         this.konfiguracjeUrlopow.set(rok, {
             initialPodstawowy: podstawowy,
@@ -315,7 +322,9 @@ const messageEl = document.getElementById('message');
 const historiaUrlopowList = document.getElementById('historiaUrlopowList');
 
 const clearDataBtn = document.getElementById('clearAllDataBtn');
-const exportDataBtn = document.getElementById('exportDataBtn'); // Nowy przycisk eksportu
+const exportDataBtn = document.getElementById('exportDataBtn');
+const importDataBtn = document.getElementById('importDataBtn');     // NOWY: Przycisk importu
+const importFileInput = document.getElementById('importFileInput'); // NOWY: Ukryty input pliku
 
 if (clearDataBtn) {
     clearDataBtn.addEventListener('click', () => {
@@ -357,6 +366,57 @@ if (exportDataBtn) {
             console.error("Błąd podczas eksportowania danych:", error);
             wyswietlKomunikat(messageEl, 'Wystąpił błąd podczas eksportowania danych. Sprawdź konsolę przeglądarki.', 'error');
         }
+    });
+}
+
+// NOWY: Obsługa importu danych
+if (importDataBtn && importFileInput) {
+    importDataBtn.addEventListener('click', () => {
+        // Kliknij ukryty input file, aby otworzyć okno wyboru pliku
+        importFileInput.click();
+    });
+
+    importFileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0]; // Pobierz pierwszy wybrany plik
+        if (!file) {
+            wyswietlKomunikat(messageEl, 'Nie wybrano pliku do importu.', 'info');
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            try {
+                const importedData = JSON.parse(e.target.result);
+
+                // Sprawdź, czy zaimportowane dane mają oczekiwaną strukturę
+                if (importedData.konfiguracjeUrlopow && importedData.historiaUrlopow) {
+                    // Pytanie o potwierdzenie, bo import nadpisze bieżące dane
+                    if (confirm('Czy na pewno chcesz zaimportować dane? Spowoduje to nadpisanie bieżących danych!')) {
+                        pracownik.setAllData(importedData.konfiguracjeUrlopow, importedData.historiaUrlopow);
+                        aktualizujStanUrlopow();
+                        aktualizujHistorieUrlopow();
+                        wypelnijSelectLatami(); // Odśwież select lat, na wypadek nowych konfiguracji lat
+                        wyswietlKomunikat(messageEl, 'Dane zaimportowano pomyślnie.', 'success');
+                    } else {
+                        wyswietlKomunikat(messageEl, 'Import danych anulowany.', 'info');
+                    }
+                } else {
+                    wyswietlKomunikat(messageEl, 'Nieprawidłowy format pliku JSON. Brakuje oczekiwanych danych.', 'error');
+                }
+            } catch (error) {
+                console.error("Błąd podczas importowania danych:", error);
+                wyswietlKomunikat(messageEl, 'Błąd odczytu lub parsowania pliku JSON. Upewnij się, że to prawidłowy plik backupu.', 'error');
+            }
+            // Zresetuj input pliku, aby ten sam plik mógł być wybrany ponownie (jeśli konieczne)
+            event.target.value = ''; 
+        };
+
+        reader.onerror = () => {
+            wyswietlKomunikat(messageEl, 'Wystąpił błąd podczas odczytu pliku.', 'error');
+        };
+
+        reader.readAsText(file); // Odczytaj plik jako tekst
     });
 }
 
@@ -406,7 +466,7 @@ function aktualizujHistorieUrlopow() {
         switch(urlop.typ) {
             case 'podstawowy': typTekst = 'Urlop podstawowy'; break;
             case 'dodatkowy': typTekst = 'Urlop dodatkowy'; break;
-            case 'l4': typTekst = 'Zwolnienie lekarskie (L4)'; break;
+            case 'l4': typTekst = 'Zwolnienie Lekarskie (L4)'; break;
             case 'opieka': typTekst = 'Opieka nad dzieckiem'; break;
             default: typTekst = urlop.typ;
         }
