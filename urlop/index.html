@@ -13,12 +13,15 @@
         <div class="config-section">
             <h2>Konfiguracja Urlopów</h2>
             <form id="configForm">
-                <label for="initialPodstawowy">Początkowy urlop podstawowy (dni):</label>
-                <input type="number" id="initialPodstawowy" value="26" min="0" required>
-
-                <label for="initialDodatkowy">Początkowy urlop dodatkowy (dni):</label>
+                <label for="selectYear">Wybierz rok konfiguracji urlopu:</label>
+                <select id="selectYear" required>
+                    </select>
+                <br><br> <label for="initialDodatkowy" id="labelDodatkowy">Początkowy urlop dodatkowy (dni, za wybrany rok):</label>
                 <input type="number" id="initialDodatkowy" value="9" min="0" required>
 
+                <label for="initialPodstawowy" id="labelPodstawowy">Początkowy urlop podstawowy (dni, za wybrany rok):</label>
+                <input type="number" id="initialPodstawowy" value="26" min="0" required>
+                
                 <button type="submit">Ustaw Konfigurację</button>
             </form>
             <p id="configMessage" class="message"></p>
@@ -46,7 +49,7 @@
 
                 <label for="dataRozpoczecia">Data rozpoczęcia:</label>
                 <input type="date" id="dataRozpoczecia" required>
-
+                
                 <button type="submit">Zgłoś Urlop</button>
             </form>
             <p id="message" class="message"></p>

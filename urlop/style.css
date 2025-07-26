@@ -40,7 +40,8 @@ h1, h2 {
     font-weight: bold;
 }
 
-.config-section input[type="number"] {
+.config-section input[type="number"],
+.config-section select { /* Dodano styl dla select */
     width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 15px;

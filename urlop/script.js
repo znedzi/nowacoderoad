@@ -5,13 +5,15 @@ class ZarzadzanieUrlopem {
         this.poczatkowyUrlopPodstawowy = urlopPodstawowy;
         this.poczatkowyUrlopDodatkowy = urlopDodatkowy;
         this.historiaUrlopow = [];
+        this.rokKonfiguracji = new Date().getFullYear(); 
     }
 
-    ustawKonfiguracje(podstawowy, dodatkowy) {
+    ustawKonfiguracje(podstawowy, dodatkowy, rok) {
         this.urlopPodstawowyDni = podstawowy;
         this.urlopDodatkowyDni = dodatkowy;
         this.poczatkowyUrlopPodstawowy = podstawowy;
-        this.poczatkowyUrlopDodatkowy = dodatkowy;
+        this.poczatkowyUrlopDodatkowy = dodatkowy; // Poprawiona literówka
+        this.rokKonfiguracji = rok;
     }
 
     sprawdzDostepnosc(typUrlopu, liczbaDni) {
@@ -42,7 +44,8 @@ class ZarzadzanieUrlopem {
             typ: typUrlopu,
             dni: liczbaDni,
             od: dataRozpoczecia,
-            status: 'zatwierdzony'
+            status: 'zatwierdzony',
+            rokUrlopu: this.rokKonfiguracji
         });
         return { success: true, message: `Urlop ${typUrlopu} na ${liczbaDni} dni zgłoszony pomyślnie.` };
     }
@@ -60,12 +63,13 @@ class ZarzadzanieUrlopem {
         return procentWykorzystania.toFixed(2);
     }
 
-    resetujUrlopy(nowyUrlopPodstawowy = 0, nowyUrlopDodatkowy = 0) {
+    resetujUrlopy(nowyUrlopPodstawowy = 0, nowyUrlopDodatkowy = 0, rok = new Date().getFullYear()) {
         this.urlopPodstawowyDni = nowyUrlopPodstawowy;
         this.urlopDodatkowyDni = nowyUrlopDodatkowy;
         this.poczatkowyUrlopPodstawowy = nowyUrlopPodstawowy;
         this.poczatkowyUrlopDodatkowy = nowyUrlopDodatkowy;
         this.historiaUrlopow = [];
+        this.rokKonfiguracji = rok;
     }
 }
 
@@ -82,6 +86,11 @@ const configForm = document.getElementById('configForm');
 const initialPodstawowyInput = document.getElementById('initialPodstawowy');
 const initialDodatkowyInput = document.getElementById('initialDodatkowy');
 const configMessageEl = document.getElementById('configMessage');
+
+const selectYearEl = document.getElementById('selectYear');
+const labelDodatkowyEl = document.getElementById('labelDodatkowy');
+const labelPodstawowyEl = document.getElementById('labelPodstawowy');
+
 
 const urlopForm = document.getElementById('urlopForm');
 const messageEl = document.getElementById('message');
@@ -123,46 +132,73 @@ function aktualizujHistorieUrlopow() {
 
         listItem.innerHTML = `
             <span>${urlop.typ === 'podstawowy' ? 'Urlop podstawowy' : 'Urlop dodatkowy'} (${urlop.dni} dni)</span>
-            <span>Data: ${dataOd}</span>
+            <span>Data: ${dataOd} (rok: ${urlop.rokUrlopu})</span>
             <span style="color: #66bb6a;">${urlop.status === 'zatwierdzony' ? 'Zatwierdzony' : urlop.status}</span>
         `;
         historiaUrlopowList.appendChild(listItem);
     });
 }
 
-// Obsługa formularza konfiguracji
+// Funkcja wypełniająca listę rozwijaną latami - TYLKO Z PRZESZŁOŚCIĄ I BIEŻĄCYM ROKIEM
+function wypelnijSelectLatami() {
+    const currentYear = new Date().getFullYear();
+    // Ustawienie zakresu lat: od 10 lat wstecz do bieżącego roku
+    const startYear = currentYear - 10; 
+    const endYear = currentYear; // Koniec to bieżący rok
+
+    selectYearEl.innerHTML = ''; // Wyczyść istniejące opcje przed dodaniem nowych
+
+    for (let year = startYear; year <= endYear; year++) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        if (year === currentYear) {
+            option.selected = true; // Domyślnie zaznacz bieżący rok
+        }
+        selectYearEl.appendChild(option);
+    }
+}
+
+// Funkcja aktualizująca etykiety na podstawie wybranego roku
+function zaktualizujEtykietyRoku() {
+    const wybranyRok = selectYearEl.value;
+    if (labelDodatkowyEl) {
+        labelDodatkowyEl.textContent = `Początkowy urlop dodatkowy (dni, za rok ${wybranyRok}):`;
+    }
+    if (labelPodstawowyEl) {
+        labelPodstawowyEl.textContent = `Początkowy urlop podstawowy (dni, za rok ${wybranyRok}):`;
+    }
+}
+
+
 configForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Dodane zabezpieczenie: potwierdzenie przed wykonaniem
     const potwierdzenie = confirm("Czy na pewno chcesz zmienić konfigurację urlopów? Spowoduje to zresetowanie dostępnych dni i historii urlopów.");
     if (!potwierdzenie) {
         wyswietlKomunikat(configMessageEl, 'Zmiana konfiguracji anulowana.', 'error');
-        return; // Anuluj działanie, jeśli użytkownik nie potwierdzi
+        return;
     }
 
     const initialPodstawowy = parseInt(initialPodstawowyInput.value);
     const initialDodatkowy = parseInt(initialDodatkowyInput.value);
+    const selectedYear = parseInt(selectYearEl.value);
 
     if (isNaN(initialPodstawowy) || isNaN(initialDodatkowy) ||
-        initialPodstawowy < 0 || initialDodatkowy < 0) {
-        wyswietlKomunikat(configMessageEl, 'Wszystkie wartości muszą być liczbami nieujemnymi.', 'error');
+        initialPodstawowy < 0 || initialDodatkowy < 0 || isNaN(selectedYear)) {
+        wyswietlKomunikat(configMessageEl, 'Wszystkie wartości muszą być liczbami nieujemnymi, a rok musi być wybrany.', 'error');
         return;
     }
 
-    // Dodatkowo resetujemy historię i dni urlopowe, jeśli konfiguracja jest zmieniana
-    // ponieważ nowe początkowe dni mogą zaburzyć dotychczasowe wykorzystanie.
-    pracownik.resetujUrlopy(initialPodstawowy, initialDodatkowy);
-    // Następnie aktualizujemy stan na podstawie nowych wartości
-    pracownik.ustawKonfiguracje(initialPodstawowy, initialDodatkowy);
+    pracownik.resetujUrlopy(initialPodstawowy, initialDodatkowy, selectedYear);
+    pracownik.ustawKonfiguracje(initialPodstawowy, initialDodatkowy, selectedYear);
 
     aktualizujStanUrlopow();
-    aktualizujHistorieUrlopow(); // Historia zostanie wyczyszczona
-    wyswietlKomunikat(configMessageEl, 'Konfiguracja urlopów zaktualizowana pomyślnie.', 'success');
+    aktualizujHistorieUrlopow();
+    wyswietlKomunikat(configMessageEl, `Konfiguracja urlopów za rok ${selectedYear} zaktualizowana pomyślnie.`, 'success');
 });
 
 
-// Obsługa formularza zgłaszania urlopu
 urlopForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -193,6 +229,11 @@ urlopForm.addEventListener('submit', function(event) {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    wypelnijSelectLatami();
+    zaktualizujEtykietyRoku();
+
+    selectYearEl.addEventListener('change', zaktualizujEtykietyRoku);
+
     aktualizujStanUrlopow();
     aktualizujHistorieUrlopow();
 });
