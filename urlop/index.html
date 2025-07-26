@@ -4,83 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Zarządzania Urlopem</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>System Zarządzania Urlopem</h1>
+    <header>
+        <h1>Zarządzanie Dniami Wolnymi</h1>
+    </header>
 
-        <div class="config-section">
-            <h2>Konfiguracja Urlopów</h2>
-            <form id="configForm">
-                <label for="selectYear">Wybierz rok konfiguracji urlopu:</label>
-                <select id="selectYear" required>
-                    </select>
-                <br><br>
-
-                <label for="initialDodatkowy" id="labelDodatkowy">Początkowy urlop dodatkowy (dni, za wybrany rok):</label>
-                <input type="number" id="initialDodatkowy" value="9" min="0" required>
-
-                <label for="initialPodstawowy" id="labelPodstawowy">Początkowy urlop podstawowy (dni, za wybrany rok):</label>
-                <input type="number" id="initialPodstawowy" value="26" min="0" required>
-                
-                <button type="submit">Ustaw Konfigurację</button>
-            </form>
-            <p id="configMessage" class="message"></p>
-        </div>
-
-        <div class="current-status">
+    <main>
+        <section class="dashboard-section">
             <h2>Aktualny Stan Urlopów</h2>
-            <p>Całkowity dostępny urlop: <span id="urlopCalkowityDni"></span> dni</p>
-            <p>Urlop podstawowy (pozostało): <span id="urlopPodstawowyDni"></span> dni</p>
-            <p>Urlop dodatkowy (pozostało): <span id="urlopDodatkowyDni"></span> dni</p>
-            <p>Wykorzystanie urlopu: <span id="wykorzystanieProcent"></span>%</p>
-            
-            <hr>
-            <h3>Rozbicie na lata:</h3>
-            <div id="urlopRozbicieNaLata">
+            <div class="summary-cards">
+                <div class="card">
+                    <h3>Całkowite dostępne dni:</h3>
+                    <p><span id="urlopCalkowityDni">0</span> dni</p>
                 </div>
-
-            <hr>
-            <h3>Wizualizacja wykorzystania:</h3>
+                <div class="card">
+                    <h3>Podstawowy pozostały:</h3>
+                    <p><span id="urlopPodstawowyDni">0</span> dni</p>
+                </div>
+                <div class="card">
+                    <h3>Dodatkowy pozostały:</h3>
+                    <p><span id="urlopDodatkowyDni">0</span> dni</p>
+                </div>
+                <div class="card">
+                    <h3>Wykorzystanie:</h3>
+                    <p><span id="wykorzystanieProcent">0.00</span>%</p>
+                </div>
+            </div>
             <div class="chart-container">
                 <canvas id="urlopChart"></canvas>
             </div>
-        </div>
+            <div class="yearly-breakdown">
+                <h3>Rozbicie na lata:</h3>
+                <div id="urlopRozbicieNaLata">
+                    </div>
+            </div>
+        </section>
 
-        <div class="form-section">
-            <h2>Zgłoś Wykorzystany Urlop / Dni Wolne</h2>
-            <form id="urlopForm">
-                <label for="typUrlopu">Typ dni wolnych:</label>
-                <select id="typUrlopu" required>
-                    <option value="podstawowy">Urlop Podstawowy</option>
-                    <option value="dodatkowy">Urlop Dodatkowy</option>
-                    <option value="l4">Zwolnienie lekarskie (L4)</option>
-                    <option value="opieka">Opieka nad dzieckiem</option>
-                </select>
-
-                <label for="liczbaDni">Liczba dni:</label>
-                <input type="number" id="liczbaDni" min="1" required>
-
-                <label for="dataRozpoczecia">Data rozpoczęcia:</label>
-                <input type="date" id="dataRozpoczecia" required>
-
-                <label for="adnotacje">Adnotacje (opcjonalnie):</label>
-                <textarea id="adnotacje" rows="3" placeholder="Dodaj krótką notatkę..."></textarea>
-                
-                <button type="submit">Zgłoś</button>
+        <section class="form-section">
+            <h2>Konfiguracja Urlopów (Dni początkowe na rok)</h2>
+            <form id="configForm">
+                <div class="form-group">
+                    <label for="selectYear">Wybierz rok:</label>
+                    <select id="selectYear"></select>
+                </div>
+                <div class="form-group">
+                    <label for="initialPodstawowy" id="labelPodstawowy">Początkowy urlop podstawowy (dni):</label>
+                    <input type="number" id="initialPodstawowy" min="0" value="26" required>
+                </div>
+                <div class="form-group">
+                    <label for="initialDodatkowy" id="labelDodatkowy">Początkowy urlop dodatkowy (dni):</label>
+                    <input type="number" id="initialDodatkowy" min="0" value="0" required>
+                </div>
+                <button type="submit">Ustaw Konfigurację</button>
+                <p id="configMessage" class="message"></p>
             </form>
-            <p id="message" class="message"></p>
-        </div>
+        </section>
 
-        <div class="history-section">
+        <section class="form-section" id="formularzEdycji"> <h2>Zgłoś/Modyfikuj Dni Wolne</h2>
+            <form id="urlopForm">
+                <div class="form-group">
+                    <label for="typUrlopu">Typ dni wolnych:</label>
+                    <select id="typUrlopu" required>
+                        <option value="podstawowy">Urlop Podstawowy</option>
+                        <option value="dodatkowy">Urlop Dodatkowy</option>
+                        <option value="l4">Zwolnienie Lekarskie (L4)</option>
+                        <option value="opieka">Opieka nad dzieckiem</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="liczbaDni">Liczba dni:</label>
+                    <input type="number" id="liczbaDni" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="dataRozpoczecia">Data rozpoczęcia:</label>
+                    <input type="date" id="dataRozpoczecia" required>
+                </div>
+                <div class="form-group">
+                    <label for="adnotacje">Adnotacje (opcjonalnie):</label>
+                    <textarea id="adnotacje" rows="3"></textarea>
+                </div>
+                <button type="submit">Zgłoś Urlop</button>
+                <p id="message" class="message"></p>
+            </form>
+        </section>
+
+        <section class="history-section">
             <h2>Historia Zgłoszonych Dni Wolnych</h2>
             <ul id="historiaUrlopowList">
                 </ul>
-        </div>
-    </div>
+        </section>
 
-    <script src="script.js"></script>
+        <section class="admin-section">
+            <h2>Narzędzia Administracyjne</h2>
+            <button id="clearAllDataBtn" class="clear-btn">Wyczyść Wszystkie Dane</button>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 System Urlopowy</p>
+    </footer>
+
+    <script src="script.js"></script> 
 </body>
 </html>
