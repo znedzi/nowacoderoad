@@ -237,7 +237,7 @@ button[type="submit"]:hover, .clear-btn:hover {
     border-radius: 8px;
     display: flex;
     flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    justify-content: space-between;
+    justify-content: space-between; /* To push buttons to the right */
     align-items: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -267,7 +267,15 @@ button[type="submit"]:hover, .clear-btn:hover {
     margin-top: 10px;
 }
 
-.edit-btn {
+/* Nowa sekcja dla przycisków akcji w historii */
+.historia-actions {
+    display: flex; /* Użyj flexboxa, aby ułożyć przyciski obok siebie */
+    gap: 10px; /* Odstęp między przyciskami */
+    margin-left: 20px; /* Opcjonalny odstęp od treści historii */
+    white-space: nowrap; /* Zapobiega łamaniu się przycisków na dwie linie */
+}
+
+.edit-btn, .delete-btn { /* Połączone style dla obu przycisków */
     background-color: #ffc107;
     color: #333;
     padding: 8px 15px;
@@ -276,12 +284,19 @@ button[type="submit"]:hover, .clear-btn:hover {
     cursor: pointer;
     font-size: 0.9rem;
     transition: background-color 0.3s ease;
-    margin-left: 20px; /* Space from info */
-    white-space: nowrap; /* Keep button text on one line */
 }
 
 .edit-btn:hover {
     background-color: #e0a800;
+}
+
+.delete-btn {
+    background-color: #dc3545; /* Kolor czerwony dla przycisku usuwania */
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
 }
 
 /* Footer */
@@ -321,9 +336,14 @@ footer {
         align-items: flex-start;
     }
 
-    .edit-btn {
-        margin-top: 15px;
+    .historia-actions {
+        margin-top: 15px; /* Dodatkowy odstęp, gdy przyciski są pod info */
         margin-left: 0;
-        width: 100%;
+        width: 100%; /* Przyciski zajmują całą szerokość */
+        justify-content: stretch; /* Rozciągnij przyciski */
+    }
+
+    .edit-btn, .delete-btn {
+        flex: 1; /* Przyciski zajmują równą przestrzeń */
     }
 }

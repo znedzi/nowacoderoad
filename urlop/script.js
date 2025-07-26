@@ -304,6 +304,25 @@ class ZarzadzanieUrlopem {
         return { success: true, message: "Urlop zmodyfikowany pomyślnie." };
     }
 
+    // Metoda do usuwania urlopu z historii.
+    usunUrlop(id) {
+        const index = this.historiaUrlopow.findIndex(urlop => urlop.id === id);
+        if (index === -1) {
+            return { success: false, message: "Nie znaleziono zgłoszonego urlopu do usunięcia." };
+        }
+
+        const urlopDoUsuniecia = this.historiaUrlopow[index];
+
+        // Zwróć dni do puli, jeśli był to urlop podstawowy lub dodatkowy.
+        if (urlopDoUsuniecia.typ === 'podstawowy' || urlopDoUsuniecia.typ === 'dodatkowy') {
+            this.returnVacationDays(urlopDoUsuniecia.typ, urlopDoUsuniecia.dni, urlopDoUsuniecia.rokUrlopu);
+        }
+
+        // Usuń urlop z tablicy historii.
+        this.historiaUrlopow.splice(index, 1);
+        this.saveData();
+        return { success: true, message: "Urlop usunięty pomyślnie." };
+    }
 
     // Oblicza procent wykorzystania urlopu w stosunku do początkowej, całkowitej puli.
     obliczWykorzystanie() {
@@ -444,7 +463,10 @@ function aktualizujHistorieUrlopow() {
                 <span style="color: #66bb6a;">${urlop.status === 'zatwierdzony' ? 'Zatwierdzony' : urlop.status}</span>
             </div>
             ${urlop.adnotacje ? `<p class="adnotacja">Adnotacje: ${urlop.adnotacje}</p>` : ''}
-            <button class="edit-btn" data-id="${urlop.id}">Edytuj</button>
+            <div class="historia-actions">
+                <button class="edit-btn" data-id="${urlop.id}">Edytuj</button>
+                <button class="delete-btn" data-id="${urlop.id}">Usuń</button>
+            </div>
         `;
         historiaUrlopowList.appendChild(listItem);
     });
@@ -475,6 +497,33 @@ function aktualizujHistorieUrlopow() {
                         behavior: 'smooth',
                         block: 'start'
                     });
+                }
+            }
+        });
+    });
+
+    // Dodawanie słuchaczy zdarzeń dla NOWYCH przycisków usuwania.
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const idToDelete = event.target.dataset.id;
+            if (confirm('Czy na pewno chcesz usunąć ten wpis urlopu? Tej operacji nie można cofnąć!')) {
+                const wynikUsuniecia = pracownik.usunUrlop(idToDelete);
+                if (wynikUsuniecia.success) {
+                    wyswietlKomunikat(messageEl, wynikUsuniecia.message, 'success');
+                    aktualizujStanUrlopow();    // Odśwież stan urlopów
+                    aktualizujHistorieUrlopow(); // Odśwież listę historii
+                    // Dodatkowo, jeśli usuwamy urlop, który był właśnie edytowany,
+                    // należy zresetować formularz edycji.
+                    const editingId = urlopForm.dataset.editingId;
+                    if (editingId === idToDelete) {
+                        urlopForm.reset();
+                        const submitButton = urlopForm.querySelector('button[type="submit"]');
+                        if (submitButton) submitButton.textContent = 'Zgłoś Urlop';
+                        delete urlopForm.dataset.editingId;
+                    }
+
+                } else {
+                    wyswietlKomunikat(messageEl, wynikUsuniecia.message, 'error');
                 }
             }
         });
