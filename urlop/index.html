@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Zarządzania Urlopem</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -36,18 +37,27 @@
             <p>Urlop dodatkowy (pozostało): <span id="urlopDodatkowyDni"></span> dni</p>
             <p>Wykorzystanie urlopu: <span id="wykorzystanieProcent"></span>%</p>
             
-            <hr> <h3>Rozbicie na lata:</h3>
+            <hr>
+            <h3>Rozbicie na lata:</h3>
             <div id="urlopRozbicieNaLata">
                 </div>
+
+            <hr>
+            <h3>Wizualizacja wykorzystania:</h3>
+            <div class="chart-container">
+                <canvas id="urlopChart"></canvas>
+            </div>
         </div>
 
         <div class="form-section">
-            <h2>Zgłoś Wykorzystany Urlop</h2>
+            <h2>Zgłoś Wykorzystany Urlop / Dni Wolne</h2>
             <form id="urlopForm">
-                <label for="typUrlopu">Typ urlopu:</label>
+                <label for="typUrlopu">Typ dni wolnych:</label>
                 <select id="typUrlopu" required>
                     <option value="podstawowy">Urlop Podstawowy</option>
                     <option value="dodatkowy">Urlop Dodatkowy</option>
+                    <option value="l4">Zwolnienie lekarskie (L4)</option>
+                    <option value="opieka">Opieka nad dzieckiem</option>
                 </select>
 
                 <label for="liczbaDni">Liczba dni:</label>
@@ -55,14 +65,17 @@
 
                 <label for="dataRozpoczecia">Data rozpoczęcia:</label>
                 <input type="date" id="dataRozpoczecia" required>
+
+                <label for="adnotacje">Adnotacje (opcjonalnie):</label>
+                <textarea id="adnotacje" rows="3" placeholder="Dodaj krótką notatkę..."></textarea>
                 
-                <button type="submit">Zgłoś Urlop</button>
+                <button type="submit">Zgłoś</button>
             </form>
             <p id="message" class="message"></p>
         </div>
 
         <div class="history-section">
-            <h2>Historia Zgłoszonych Urlopów</h2>
+            <h2>Historia Zgłoszonych Dni Wolnych</h2>
             <ul id="historiaUrlopowList">
                 </ul>
         </div>

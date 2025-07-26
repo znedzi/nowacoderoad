@@ -19,7 +19,7 @@ body {
     box-sizing: border-box;
 }
 
-h1, h2 {
+h1, h2, h3 { /* Dodano h3 */
     color: #4da6ff; /* Jasnoniebieski dla nagłówków */
     text-align: center;
     margin-bottom: 20px;
@@ -41,7 +41,7 @@ h1, h2 {
 }
 
 .config-section input[type="number"],
-.config-section select { /* Dodano styl dla select */
+.config-section select { 
     width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 15px;
@@ -104,17 +104,26 @@ h1, h2 {
 }
 
 #urlopRozbicieNaLata span {
-    font-weight: normal; /* Przywracamy normalną wagę dla rozbicia, żeby nie konkurowało z sumą */
-    color: #f0f0f0; /* Normalny kolor tekstu */
+    font-weight: normal; 
+    color: #f0f0f0; 
 }
 
 #urlopRozbicieNaLata .rok {
     font-weight: bold;
-    color: #a0d9ff; /* Kolor dla roku */
+    color: #a0d9ff; 
 }
 
 #urlopRozbicieNaLata .dni-ilosc {
-    color: #90ee90; /* Kolor dla ilości dni, np. jasnozielony */
+    color: #90ee90; 
+}
+
+/* Style dla kontenera wykresu */
+.chart-container {
+    position: relative;
+    margin: auto;
+    width: 80%; /* Dostosuj szerokość wykresu */
+    max-width: 300px; /* Maksymalna szerokość */
+    margin-top: 20px;
 }
 
 
@@ -126,20 +135,21 @@ h1, h2 {
 
 .form-section input[type="number"],
 .form-section input[type="date"],
-.form-section select {
+.form-section select,
+.form-section textarea { /* Dodano textarea */
     width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #666; /* Ciemniejsza ramka dla pól input */
+    border: 1px solid #666; 
     border-radius: 4px;
-    box-sizing: border-box; /* Ważne, aby padding nie zwiększał szerokości */
-    background-color: #4a4a4a; /* Ciemniejsze tło dla pól input */
-    color: #f0f0f0; /* Jasny tekst w polach input */
+    box-sizing: border-box; 
+    background-color: #4a4a4a; 
+    color: #f0f0f0; 
 }
 
 /* Dostosowanie kalendarza (input type="date") */
 input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(1); /* Odwraca kolory ikony kalendarza dla ciemnego tła */
+    filter: invert(1); 
 }
 
 
@@ -168,14 +178,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .message.success {
-    background-color: #388e3c; /* Ciemniejsza zieleń */
-    color: #d4edda; /* Jasny tekst */
+    background-color: #388e3c; 
+    color: #d4edda; 
     border-color: #2e7d32;
 }
 
 .message.error {
-    background-color: #d32f2f; /* Ciemniejsza czerwień */
-    color: #f8d7da; /* Jasny tekst */
+    background-color: #d32f2f; 
+    color: #f8d7da; 
     border-color: #c62828;
 }
 
@@ -185,16 +195,50 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .history-section li {
-    background-color: #4a4a4a; /* Ciemniejszy odcień dla elementów listy */
+    background-color: #4a4a4a; 
     border: 1px solid #666;
     margin-bottom: 8px;
     padding: 10px;
     border-radius: 4px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* Zmieniono na kolumnę, aby adnotacje były pod spodem */
+    align-items: flex-start; /* Wyrównanie do lewej */
+    position: relative; /* Dla pozycjonowania przycisku edycji */
 }
 
 .history-section li span {
     font-weight: bold;
+    margin-bottom: 4px; /* Mały odstęp między liniami */
+}
+
+.history-section li .adnotacja {
+    font-weight: normal;
+    font-style: italic;
+    color: #ccc;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.history-section li .historia-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.history-section li .edit-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
+}
+
+.history-section li .edit-btn:hover {
+    background-color: #777;
 }
